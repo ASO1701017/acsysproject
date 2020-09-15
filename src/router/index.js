@@ -13,6 +13,7 @@ import Calender from  "../components/Calendar"
 import Training from "../components/Training"
 import Statistics from "../components/Statistics"
 import UserChange from "../components/UserChange"
+import CalorieShare from "../components/CalorieShare"
 
 // store
 import Store from '../store/index'
@@ -84,6 +85,11 @@ const router = new Router({
             path: "/userchange",
             name: "userchange",
             component: UserChange,
+        },
+        {
+            path: "/calorieshare",
+            name: "calorieshare",
+            component: CalorieShare,
         }
     ]
 })
