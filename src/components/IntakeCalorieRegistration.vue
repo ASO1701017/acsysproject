@@ -83,11 +83,16 @@
                 <!-- /default -->
                 <!-- footer スロットコンテンツ -->
                 <template slot="footer">
-                    <button @click="closeSelectModal" class="btn btn-outline-secondary">キャンセル</button>
+                    <button v-b-modal.modal-multi-2 class="btn btn-outline-secondary">キャンセル</button>
                 </template>
                 <!-- /footer -->
             </inputMyModal>
         </div>
+
+        <b-modal id="modal-multi-2" title="Second Modal" ok-only>
+            <p class="my-2">Second Modal</p>
+            <b-button v-b-modal.modal-multi-3 size="sm">Open Third Modal</b-button>
+        </b-modal>
 
         <div class="example-modal-window">
             <!-- コンポーネント MyModal -->
@@ -115,6 +120,11 @@
                 </template>
                 <!-- /footer -->
             </inputMyModal>
+            <b-button v-b-modal.modal-tall>Launch overflowing modal</b-button>
+
+            <b-modal id="modal-tall" title="Overflowing Content">
+
+            </b-modal>
         </div>
 
     </div>

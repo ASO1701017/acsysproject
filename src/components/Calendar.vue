@@ -27,7 +27,7 @@
                 </tbody>
             </table>
             <h4 class="col-xs-6 col-auto pb-2">摂取カロリー合計：{{sumFoodCalories}}kcal</h4>
-            <table class="table table-hover table-sm col-auto">
+            <table class="table table-sm col-auto">
                 <thead>
                 <tr class="table-danger">
                     <th class="training">トレーニング</th>
@@ -83,15 +83,11 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data)
-                    if (data["intaked"].length !== 0){
-                        console.log("カレンダー情報取得:ok")
-                        this.intaked = data["intaked"]
-                        this.burned = data["burned"]
-                    }else {
-                        console.log("カレンダー情報取得:ng")
-                        alert("エラーが発生しました。もう一度やり直してください")
-                    }
+                    console.log("カレンダー情報取得:ok")
+                    this.intaked.splice(0,this.intaked.length)
+                    this.burned.splice(0,this.burned.length)
+                    this.intaked = data["intaked"]
+                    this.burned = data["burned"]
                 })
                 .catch(function (error) {
                     console.log(error)
@@ -121,6 +117,7 @@
                     .then(response => response.json())
                     .then(data => {
                         console.log("カレンダー情報取得:ok")
+                        console.log(data)
                         this.intaked.splice(0,this.intaked.length)
                         this.burned.splice(0,this.burned.length)
                         this.intaked = data["intaked"]

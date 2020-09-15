@@ -134,7 +134,6 @@
                     account_weight: Number(array.account_weight),
                     account_level: array.account_level,
                     account_token:this.$store.state.accountToken,
-
                 }
                 const json_data = JSON.stringify(this.post_data)
                 await fetch(URL, {
@@ -251,7 +250,6 @@
                     console.log(check)
                     if (check){
                         //登録時
-                        this.$store.commit('tokenUpdate',check)
                         await this.$router.replace("/savecalorie")
                     }else {
                         //エラーや存在しなかった場合

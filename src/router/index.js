@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 // components
-import StartTop from "../components/SrartTop"
+import StartTop from "../components/StartTop"
 import UserLogin from '../components/UserLogin'
 import UserSignUp from '../components/UserSignUp'
 import UserGuide from "../components/UserGuide"

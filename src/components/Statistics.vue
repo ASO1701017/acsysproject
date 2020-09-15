@@ -26,8 +26,8 @@
                     <tbody>
                     <tr v-for="item in 12" v-bind:key="item">
                         <td>{{ item }}月</td>
-                        <td>{{burned[item-1]}}</td>
                         <td>{{intaked[item-1]}}</td>
+                        <td>{{burned[item-1]}}</td>
                         <td>{{calorieBox[item-1]}}</td>
                     </tr>
                     <td v-if="!burned.length">リストは空です</td>
@@ -66,52 +66,17 @@
         }
         ,async created() {
             //日付の差分取得
+            getDay = new Date()
+            const getTodayTime = getDay.getTime()
+            this.year=getDay.getFullYear()
             const startDay = String(this.$store.state.accountStartDay)
             this.dayBox=startDay.split("")
             const year = this.dayBox[0] + this.dayBox[1] + this.dayBox[2] + this.dayBox[3]
             const month = this.dayBox[4] + this.dayBox[5]
             const day = this.dayBox[6] + this.dayBox[7]
-            let getDay = new Date(year,month,day)
+            let getDay = new Date(year,month-1,day)
             const getTime = getDay.getTime()
-            getDay = new Date()
-            const getTodayTime = getDay.getTime()
-            this.year=getDay.getFullYear()
-            this.timeDay = Math.ceil((getTime - getTodayTime) / 864000000)
-
-            //通信
-            const URL = "https://fat3lak1i2.execute-api.us-east-1.amazonaws.com/acsys/users/statistics"
-            this.dataGet={
-                account_token:this.$store.state.accountToken,
-                year:this.year
-            }
-            const json_data = JSON.stringify(this.dataGet)
-            await fetch(URL,{
-                mode:'cors',
-                method:'POST',
-                body:json_data,
-                headers:{'Content-type':'application'},
-            })
-                .then(response => response.json())
-                .then(data => {
-                    const flg_data = data["isSuccess"]
-                    if (flg_data){
-                        console.log("カロリー統計取得:ok")
-                        this.intaked = data["intaked"]
-                        this.burned = data["burned"]
-                        for (let i = 0; i < 12; i++) {
-                            this.calorieBox[i] =  this.intaked[i] - this.burned[i]
-                        }
-                        this.fillData()
-                    }else {
-                        console.log("カロリー統計取得:ng")
-                        alert("エラーが発生しました。もう一度やり直してください")
-                    }
-                })
-                .catch(function (error) {
-                    console.log(error)
-                    alert("エラーが発生しました。もう一度やり直してください")
-                })
-            this.spiner = true
+            this.timeDay = Math.floor((getTodayTime-getTime) / (1000 * 60 * 60 * 24))
         },
         mounted () {
             this.fillData()
@@ -218,7 +183,7 @@
                             this.intaked = data["intaked"]
                             this.burned = data["burned"]
                             for (let i = 0; i < 12; i++) {
-                                this.calorieBox[i] =  this.intaked[i] - this.burned[i]
+                                this.calorieBox[i] =  this.burned[i] - this.intaked[i]
                             }
                             this.fillData()
                         }else {

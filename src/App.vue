@@ -31,4 +31,11 @@
   .v-enter, .v-leave-to {
       opacity: 0;
   }
+   html{
+       background-image: url(./assets/StartTopImage.jpg);
+       background-position: center center;
+       background-repeat: no-repeat;
+       background-size: cover;
+       background-attachment: fixed;
+   }
 </style>
