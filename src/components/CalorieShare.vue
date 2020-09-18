@@ -8,7 +8,7 @@
                 <h4 class="text-success border-bottom border-success mb-5 col-11 text-left mx-auto">投稿内容</h4>
                 <span class="form-group row mx-auto">
                     <label for="detail" class="col-sm-3  col-form-label text-right col-auto" >SNSで共有する内容</label>
-                    <input type="text" class="col-sm-7 col-auto form-control ml-xs-5 " id="detail" maxlength="280" v-model="TweetDetail">
+                    <textarea class="col-sm-7 col-auto form-control ml-xs-5 " id="detail" rows="8" cols="80" maxlength="280" v-model="TweetDetail"></textarea>
                 </span>
                 <span class="form-group row mx-auto">
                     <label for="detail" class="col-sm-3  col-form-label text-right col-auto" >ハッシュタグ</label>
