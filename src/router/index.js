@@ -14,6 +14,8 @@ import Training from "../components/Training"
 import Statistics from "../components/Statistics"
 import UserChange from "../components/UserChange"
 import CalorieShare from "../components/CalorieShare"
+import FormJudge from "../components/FormJudge"
+
 
 // store
 import Store from '../store/index'
@@ -90,6 +92,11 @@ const router = new Router({
             path: "/calorieshare",
             name: "calorieshare",
             component: CalorieShare,
+        },
+        {
+            path: "/formjudge",
+            name: "formjudge",
+            component: FormJudge
         }
     ]
 })

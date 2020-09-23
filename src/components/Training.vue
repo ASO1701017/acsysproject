@@ -81,6 +81,9 @@
                 </b-button>
             </template>
         </b-modal>
+        <div class="text-center mt-3" >
+            <router-link to="/formjudge" class="h5 text-success">フォームの判定をする</router-link>
+        </div>
     </div>
 </template>
 
