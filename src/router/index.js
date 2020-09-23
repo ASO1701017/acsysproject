@@ -12,6 +12,7 @@ import Calender from  "../components/Calendar"
 import Training from "../components/Training"
 import Statistics from "../components/Statistics"
 import UserChange from "../components/UserChange"
+import FormJudge from "../components/FormJudge"
 import NotFound from "../components/NotFound";
 
 // store
@@ -80,6 +81,12 @@ const router = new Router({
             path: "/training",
             name: "training",
             component: Training,
+        },
+        {
+            //フォーム判定
+            path: "/formjudge",
+            name: "formjudge",
+            component: FormJudge,
         },
         {
             //統計
