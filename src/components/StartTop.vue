@@ -7,8 +7,8 @@
                     詳しい機能は下の方に書いてあるのでぜひご覧ください！</p>
                 <hr class="my-4" style="background-color: white">
                 <div class="row">
-                    <p><a class="btn btn-success btn-lg mr-3" href="/#/login" role="button">ログインはこちら</a></p>
-                    <p><a class="btn btn-info btn-lg" href="/#/signup" role="button">新規登録はこちら</a></p>
+                    <p><a class="btn btn-success btn-lg mr-3" href="/login" role="button">ログインはこちら</a></p>
+                    <p><a class="btn btn-info btn-lg" href="/signup" role="button">新規登録はこちら</a></p>
                 </div>
             </div><!-- /.container -->
         </div><!-- /.jumbotron -->
