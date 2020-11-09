@@ -28,12 +28,12 @@
         data() {
             return {
                 TweetDetail: "",
-                HashTag: "",
+                // HashTag: "",
             }
         },methods:{
             twitterShare(){
                 //シェアするためのtwitterの画面を設定（textareaに記載された内容付きで）
-                var shareURL = 'https://twitter.com/intent/tweet?text=' + this.TweetDetail + "%20%23" + this.HashTag;
+                var shareURL = 'https://twitter.com/intent/tweet?text=' + this.TweetDetail + "%20%23acsys";
                 //シェア用の画面へ移行
                 window.open(shareURL,null,'left=350,top=200,width=700,height=550')
                 // location.href = shareURL

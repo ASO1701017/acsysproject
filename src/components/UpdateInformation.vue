@@ -3,8 +3,8 @@
         <div class="jumbotron jumbotron-fluid bg-dark">
             <div class="container">
                 <h1 class="display-4 font-weight-lighter" style="font-family: Helvetica,'Yu Gothic UI',serif">更新情報</h1>
-            </div><!-- /.container -->
-        </div><!-- /.jumbotron -->
+            </div>
+        </div>
         <div class="container">
             <div class="row">
                 <div class="col-3 lead">

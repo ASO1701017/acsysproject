@@ -22,6 +22,7 @@ import UpdateInformation from "../components/UpdateInformation";
 
 Vue.use(Router)
 
+
 const router = new Router({
     //#を外すためhistory
     mode: 'history',
