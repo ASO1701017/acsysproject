@@ -1,7 +1,7 @@
 <template>
   <!-- PoseNetモデルの読み込み -->
   <div id="app" class="container">
-    <h1>Count demo</h1>
+    <h1>デモ</h1>
     <p id='status'></p>
     <div class="container">
       <div class="dash-unit">
@@ -12,6 +12,8 @@
         <div class="reset">
           <button id="btn_reset" >リセット</button>
         </div>
+        <canvas ref="canvas" id="canvas" width="500" height="500"></canvas>
+        <video ref="video" id="video" width="500" height="500" autoplay></video>
       </div>
     </div>
   </div>
@@ -24,13 +26,14 @@
 <script>
 import p5 from 'p5'
 import ml5 from 'ml5'
-//import poseNet from '@tensorflow-models/posenet'
 
 export default {
-  // props: ['url1','url2','url3'],
+  // props:[{
+  //   poses: [],
+  // }],
   data() {
     return {
-      video: '',
+      video: {},
       posenet: '',
       poses: [],
       count_value: 0,
@@ -38,50 +41,75 @@ export default {
       count_disp: document.getElementById("disp_count"),
       reset_btn: document.getElementById("btn_reset"),
       keypoint: '',
-      // pose_url1: 'https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.8.0/p5.min.js',
-      // pose_url2: 'https://unpkg.com/ml5@latest/dist/ml5.min.js',
-      // pose_url3: 'https://unpkg.com/@tensorflow-models/posenet',
+      canvas: {},
     }
   },
 
-  created() {
-    const script1 = function (p5,ml5) {
-      p5.setup = _ => {
-        const canvas = p5.createCanvas(500, 500);
-        canvas.parent('videoContainer');
-        this.video = p5.createCapture();
-        this.video.size(width, height);
-        this.posenet = ml5.poseNet(this.video, this.modelReady);
-        this.posenet.on('pose', function (results) {
-          this.poses = results;
-        });
-        this.video.hide();
-        this.draw()
-      }
+  mounted() {
+    //Webカメラ
+    this.video = this.$refs.video
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+        this.video.srcObject = stream
+        this.video.play()
+      })
     }
-    const P5 = require('p5')
-    new P5(script1(p5, ml5))
+
+    //poseNetのセットアップ処理
+    console.log("挙動確認")
+    // this.video = p5.createCapture();
+    this.posenet = ml5.poseNet(this.video,this.modelReady());
+    let val=[];
+    this.posenet.on('pose', function (results) {
+      val = this.poses = results;
+      // console.log(results)
+      console.log("pose_length:", val.length)
+      console.log("姿勢判定処理を開始します")
+    });
+        // .then(
+        // function (){
+        //   this.draw(results)
+        // }
+    // );
+    //canvasに描画が成功したのでvideo要素を見えないようにする
+    // this.video.hide();
+    // this.draw(val)
   },
   methods: {
-    modelReady: function(){
-      select('#status').html('モデルを読み取りました');
+    //canvasにVIDEOの内容を描画
+    capture () {
+      this.canvas = this.$refs.canvas
+      this.canvas.getContext('2d').drawImage(this.video, 0, 0, 500, 500)
     },
 
-    // count: function() {
-    //     this.count_value += 1;
-    //     console.log(this.count_value);
-    //     this.count_disp.innerHTML = this.count_value;
-    // },
+    //poseNetのモデルが読み取られたか確認するメソッド
+    modelReady: function () {
+      console.log('モデルの読取に成功しました')
+    },
 
-    draw: function () {
-      if (this.poses.length > 0) {
-        let pose = this.poses[0].pose;
+    //回数をカウントするメソッド
+    count: function () {
+      this.count_value += 1;
+      console.log(this.count_value);
+      this.count_disp.innerHTML = this.count_value;
+    },
+
+
+    draw: function (poses) {
+      console.log('描画を開始')
+      this.poses = poses;
+      console.log(poses)
+      if (poses.length > 0) {
+        let pose = poses[0].pose;
         this.keypoint = pose.keypoints[0];
-        for (let i = 0; i < this.poses.length; i++) {
+        // console.log('部位名：' + this.keypoint.part);
+        for (let i = 0; i < poses.length; i++) {
           // poseが持つ情報を出力
-          let pose = this.poses[i].pose;
+          console.log('poseが持つ情報を出力します')
+          let pose = poses[i].pose;
           if (pose.score >= 0.6) {
             console.log("ok");
+            //ユーザーが判定ラインより下にいった時
             if (pose.nose.y >= 250.0 && this.should_count) {
               console.log(pose.nose.y);
               this.count_value += 1;
@@ -102,10 +130,12 @@ export default {
         this.drawSkeleton();
         this.drawKeypoints();
       }
-      fill(255, 0, 0);
-      stroke('red');
-      line(0, 250, 600, 250);
+      //判定ラインの線を引く
+      // fill(255, 0, 0);
+      // stroke('red');
+      // line(0, 250, 600, 250);
     },
+
 
     drawKeypoints: function () {
       for (let i = 0; i < this.poses.length; i++) {
@@ -113,30 +143,38 @@ export default {
         for (let j = 0; j < pose.keypoints.length; j++) {
           this.keypoint = pose.keypoints[j];
           if (this.keypoint.score > 0.2) {
-            fill(color(0, 0, 255));
-            stroke(20);
-            ellipse(this.keypoint.position.x, this.keypoint.position.y, 10, 10);
+            // シェイプの塗りに使用するカラーを設定
+            this.keypoint.fill(color(0, 0, 255));
+            // 線とシェイプの枠線の描画に使用するカラーを設定
+            this.keypoint.stroke(20);
+            this.keypoint.ellipse(this.keypoint.position.x, this.keypoint.position.y, 10, 10);
           }
         }
       }
     },
-    drawSkeleton: function(){
+
+
+    drawSkeleton: function () {
       for (let i = 0; i < this.poses.length; i++) {
         let skeleton = this.poses[i].skeleton;
         for (let j = 0; j < skeleton.length; j++) {
           let partA = skeleton[j][0];
           let partB = skeleton[j][1];
 
+          //骨格の線を引く
           stroke('rgb(0,255,0)');
           // strokeWeight(5);
           line(partA.position.x, partA.position.y, partB.position.x, partB.position.y);
         }
       }
     },
-    // resetValue: function(){
-    //     this.count_value = 0;
-    //     this.count_disp.innerHTML = this.count_value;
-    // }
+
+    //回数の値をリセットするメソッド
+    resetValue: function () {
+      console.log("リセットしました")
+      this.count_value = 0;
+      this.count_disp.innerHTML = this.count_value;
+    }
   }
 }
 
