@@ -11,7 +11,7 @@
                     <b-nav-item href="/calendar">カレンダー</b-nav-item>
                     <b-nav-item href="/statistics">統計</b-nav-item>
                     <b-nav-item href="/training">トレーニング</b-nav-item>
-                    <b-nav-item href="/calorieshare">投稿</b-nav-item>
+<!--                    <b-nav-item href="/tweet">Twitterに投稿</b-nav-item>-->
                 </b-navbar-nav>
 
                 <b-navbar-nav class="ml-auto">
@@ -19,10 +19,10 @@
                         <!-- Using 'button-content' slot -->
                         <template v-slot:button-content>
                             <em>{{userName}}</em>
-                            <!--                            Apiで名前の取得-->
+<!--                            Apiで名前の取得-->
                         </template>
                         <b-dropdown-item href="/userchange">登録情報の変更</b-dropdown-item>
-                        <b-dropdown-item @click="openModal">ログアウト</b-dropdown-item>
+                        <b-dropdown-item @click="openModal"><span class="text-danger">ログアウト</span></b-dropdown-item>
                     </b-nav-item-dropdown>
                 </b-navbar-nav>
 

@@ -1,12 +1,12 @@
 <template>
-  <div>
+    <div>
 <!--  headerの設定-->
       <LoginHeader v-if="this.$store.state.accountToken" ></LoginHeader>
       <TopHeader v-else-if="!this.$store.state.accountToken"></TopHeader>
       <transition mode="out-in">
           <router-view />
       </transition>
-  </div>
+    </div>
 </template>
 
 <script>

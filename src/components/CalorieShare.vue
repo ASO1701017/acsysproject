@@ -8,11 +8,7 @@
                 <h4 class="text-success border-bottom border-success mb-5 col-11 text-left mx-auto">投稿内容</h4>
                 <span class="form-group row mx-auto">
                     <label for="detail" class="col-sm-3  col-form-label text-right col-auto" >SNSで共有する内容</label>
-                    <textarea class="col-sm-7 col-auto form-control ml-xs-5 " id="detail" rows="8" cols="80" maxlength="280" v-model="TweetDetail"></textarea>
-                </span>
-                <span class="form-group row mx-auto">
-                    <label for="detail" class="col-sm-3  col-form-label text-right col-auto" >ハッシュタグ</label>
-                    <input type="text" class="col-sm-7 col-auto form-control ml-xs-5 " id="hashtag" maxlength="280" v-model="HashTag">
+                    <input type="text" class="col-sm-7 col-auto form-control ml-xs-5 " id="detail" maxlength="280" v-model="TweetDetail">
                 </span>
             </div>
             <div class="form-group col text-center">
@@ -28,12 +24,20 @@
         data() {
             return {
                 TweetDetail: "",
+<<<<<<< HEAD
                 // HashTag: "",
+=======
+                HashTag: "",
+>>>>>>> 84c31848812f5d0c2d3eaef887c5b9e928d0f953
             }
         },methods:{
             twitterShare(){
                 //シェアするためのtwitterの画面を設定（textareaに記載された内容付きで）
+<<<<<<< HEAD
                 var shareURL = 'https://twitter.com/intent/tweet?text=' + this.TweetDetail + "%20%23acsys";
+=======
+                var shareURL = 'https://twitter.com/intent/tweet?text=' + this.TweetDetail + "%20%23acsys" ;
+>>>>>>> 84c31848812f5d0c2d3eaef887c5b9e928d0f953
                 //シェア用の画面へ移行
                 window.open(shareURL,null,'left=350,top=200,width=700,height=550')
                 // location.href = shareURL
@@ -41,4 +45,8 @@
             }
         }
     }
+<<<<<<< HEAD
 </script>
+=======
+</script>
+>>>>>>> 84c31848812f5d0c2d3eaef887c5b9e928d0f953
