@@ -6,11 +6,12 @@
     <div class="container">
       <div class="dash-unit">
         <h2 class="a-spacing-none">回数</h2>
-        <div class="cont">
-          <div id="disp_count">0</div>
+        <div class="count">
+          <div id="disp_count"></div>
         </div>
         <div class="reset">
           <button id="btn_reset" >リセット</button>
+<!--          <button id="draw" @click="draw();">draw確認</button>-->
         </div>
         <canvas ref="canvas" id="canvas" width="500" height="500"></canvas>
         <video ref="video" id="video" width="500" height="500" autoplay></video>
@@ -38,7 +39,7 @@ export default {
       poses: [],
       count_value: 0,
       should_count: true,
-      count_disp: document.getElementById("disp_count"),
+      count_disp: document.getElementById("dips_count"),
       reset_btn: document.getElementById("btn_reset"),
       keypoint: '',
       canvas: {},
@@ -60,12 +61,13 @@ export default {
     // this.video = p5.createCapture();
     this.posenet = ml5.poseNet(this.video,this.modelReady());
     let val=[];
+    const ref = this;
     this.posenet.on('pose', function (results) {
       val = this.poses = results;
-      // console.log(results)
       console.log("pose_length:", val.length)
       console.log("姿勢判定処理を開始します")
-    });
+      ref.draw(val)
+    })
         // .then(
         // function (){
         //   this.draw(results)
@@ -73,7 +75,6 @@ export default {
     // );
     //canvasに描画が成功したのでvideo要素を見えないようにする
     // this.video.hide();
-    // this.draw(val)
   },
   methods: {
     //canvasにVIDEOの内容を描画
@@ -96,8 +97,9 @@ export default {
 
 
     draw: function (poses) {
+      // let poses = this.poses;
       console.log('描画を開始')
-      this.poses = poses;
+      // poses.length +=1;
       console.log(poses)
       if (poses.length > 0) {
         let pose = poses[0].pose;
@@ -106,17 +108,22 @@ export default {
         for (let i = 0; i < poses.length; i++) {
           // poseが持つ情報を出力
           console.log('poseが持つ情報を出力します')
-          let pose = poses[i].pose;
-          if (pose.score >= 0.6) {
+          let pose = poses[i].pose
+          //本当は0.6以上だが挙動確認のため低い値に設定
+          if (pose.score >= 0.3) {
             console.log("ok");
             //ユーザーが判定ラインより下にいった時
-            if (pose.nose.y >= 250.0 && this.should_count) {
+            //本当は250以上だが挙動確認のため低い値に設定
+            if (pose.nose.y >= 220.0 && this.should_count) {
+              console.log('カウントします')
               console.log(pose.nose.y);
               this.count_value += 1;
               this.should_count = false;
               console.log(this.count_value);
-              console.log(this.should_count);
-              this.count_disp.innerHTML = this.count_value;
+              console.log(this.should_count)
+              let i =  document.getElementById("dips_count")
+              i = this.count_value;
+              console.log(this.count_disp)
             } else if (pose.nose.y <= 240.0) {
               // 姿勢が元に戻った判定
               this.should_count = true;
@@ -126,9 +133,12 @@ export default {
             }
           }
         }
-        image(this.video, 0, 0, width, height);
+        // image(this.video, 0, 0, width, height);
         this.drawSkeleton();
         this.drawKeypoints();
+      }
+      else {
+        console.log('pose情報が見当たりません')
       }
       //判定ラインの線を引く
       // fill(255, 0, 0);
@@ -137,12 +147,14 @@ export default {
     },
 
 
-    drawKeypoints: function () {
+    drawKeypoints: function (poses) {
+      console.log('drawKeypoints起動')
       for (let i = 0; i < this.poses.length; i++) {
-        let pose = this.poses[i].pose;
-        for (let j = 0; j < pose.keypoints.length; j++) {
+        let pose = poses[i].pose;
+        for (let j = 0; j < pose.length; j++) {
           this.keypoint = pose.keypoints[j];
-          if (this.keypoint.score > 0.2) {
+          if (this.keypoint > 0.2) {
+            console.log('線を引きます')
             // シェイプの塗りに使用するカラーを設定
             this.keypoint.fill(color(0, 0, 255));
             // 線とシェイプの枠線の描画に使用するカラーを設定
@@ -177,5 +189,4 @@ export default {
     }
   }
 }
-
 </script>

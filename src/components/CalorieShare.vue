@@ -24,20 +24,13 @@
         data() {
             return {
                 TweetDetail: "",
-<<<<<<< HEAD
                 // HashTag: "",
-=======
                 HashTag: "",
->>>>>>> 84c31848812f5d0c2d3eaef887c5b9e928d0f953
             }
         },methods:{
             twitterShare(){
                 //シェアするためのtwitterの画面を設定（textareaに記載された内容付きで）
-<<<<<<< HEAD
-                var shareURL = 'https://twitter.com/intent/tweet?text=' + this.TweetDetail + "%20%23acsys";
-=======
                 var shareURL = 'https://twitter.com/intent/tweet?text=' + this.TweetDetail + "%20%23acsys" ;
->>>>>>> 84c31848812f5d0c2d3eaef887c5b9e928d0f953
                 //シェア用の画面へ移行
                 window.open(shareURL,null,'left=350,top=200,width=700,height=550')
                 // location.href = shareURL
@@ -45,8 +38,4 @@
             }
         }
     }
-<<<<<<< HEAD
 </script>
-=======
-</script>
->>>>>>> 84c31848812f5d0c2d3eaef887c5b9e928d0f953
