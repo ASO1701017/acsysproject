@@ -7,7 +7,7 @@
       <div class="dash-unit">
         <h2 class="a-spacing-none">回数</h2>
         <div class="count">
-          <div id="disp_count"></div>
+          <div id="disp_count">{{ count_value }}</div>
         </div>
         <div class="reset">
           <button id="btn_reset" >リセット</button>
@@ -121,8 +121,9 @@ export default {
               this.should_count = false;
               console.log(this.count_value);
               console.log(this.should_count)
-              let i =  document.getElementById("dips_count")
-              i = this.count_value;
+              // this.count_disp.innerHTML = this.count_value
+              // let i =  document.getElementById("dips_count")
+              // i = this.count_value;
               console.log(this.count_disp)
             } else if (pose.nose.y <= 240.0) {
               // 姿勢が元に戻った判定
