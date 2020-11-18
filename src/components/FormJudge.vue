@@ -10,7 +10,7 @@
           <div id="disp_count">{{ count_value }}</div>
         </div>
         <div class="reset">
-          <button id="btn_reset" >リセット</button>
+          <button id="btn_reset" @click="reset();">リセット</button>
 <!--          <button id="draw" @click="draw();">draw確認</button>-->
         </div>
         <canvas ref="canvas" id="canvas" width="500" height="500"></canvas>
@@ -183,10 +183,9 @@ export default {
     },
 
     //回数の値をリセットするメソッド
-    resetValue: function () {
+    reset: function () {
       console.log("リセットしました")
       this.count_value = 0;
-      this.count_disp.innerHTML = this.count_value;
     }
   }
 }
