@@ -6,20 +6,22 @@
                 <li class="list-group-item list-group-item-primary lead">今日の貯金:{{todayCalorie}}kcal</li>
                 <li class="list-group-item list-group-item-info lead">ー摂取カロリー：{{todayPlusCalorie}}kcal</li>
                 <li class="list-group-item list-group-item-danger lead">＋消費カロリー：{{todayMinusCalorie}}kcal</li>
+                <!--コメント-->
                 <li class="list-group-item  mb-4 lead">{{comment}}</li>
+                <!--カロリー登録ボタン-->
                 <a class="btn btn-outline-info btn-lg mb-4 " href="/intakecalorie" role="button">摂取カロリー登録 ー</a>
                 <a class="btn btn-outline-danger btn-lg mb-4" href="/consumptioncalorie" role="button">消費カロリー登録 ＋</a>
-            </ul>
+            </ul><!-- /.ul -->
             <div class="chart-small col-lg-6 col-auto">
+                <!--グラフ-->
                 <SaveCalorieChart :chart-data="dataCollection" :options="dataOptions"></SaveCalorieChart>
-            </div>
-        </div>
-
-    </div>
+            </div><!-- /.div -->
+        </div><!-- /.row -->
+    </div><!-- /.container -->
 </template>
 
 <script>
-
+    //グラフ
     import SaveCalorieChart from "./SaveCalorieChart";
 
     export default {
@@ -31,24 +33,24 @@
             return{
                 //カロリー関係
                 totalCalorie:0,
+                //摂取
                 todayPlusCalorie:0,
+                //消費
                 todayMinusCalorie:0,
                 todayCalorie:0,
                 comment:"",
                 //グラフの関数
                 dataCollection: null,
                 dataOptions:null,
-                //通信に関数
-                dataGet:[],
             }
         },
         async created() {
-
+            //カロリーデータ取得
             const URL = "https://fat3lak1i2.execute-api.us-east-1.amazonaws.com/acsys/users/calorie"
-            this.dataGet={
+            let dataGet={
                 account_token:this.$store.state.accountToken
             }
-            const json_data = JSON.stringify(this.dataGet)
+            const json_data = JSON.stringify(dataGet)
             await fetch(URL,{
                 mode:'cors',
                 method:'POST',
@@ -62,14 +64,23 @@
                     this.todayPlusCalorie = data["today_intaked"]
                     this.todayMinusCalorie  = data["today_burned"]
                     this.fillData()
+                    //Twitter用のカロリーを登録
+                    let calorieInf={
+                        userCalorie : this.totalCalorie,
+                        userIntakeCalorie : this.todayPlusCalorie,
+                        userConsumptionCalorie : this.todayMinusCalorie
+                    }
+                    this.$store.commit('calorieAdd',calorieInf)
                 })
                 .catch(function (error) {
                     console.log(error)
                     alert("エラーが発生しました。もう一度やり直してください")
                 })
 
+            //貯金を求める
             this.todayCalorie = this.todayMinusCalorie - this.todayPlusCalorie
 
+            //コメント
             if (this.totalCalorie>50){
                 this.comment = "いい感じに貯金が貯まってきましたね！無理をせずこの調子で頑張っていきましょう。"
             }else if (this.totalCalorie>=0){
@@ -82,6 +93,7 @@
             this.fillData()
         },
         methods: {
+            //グラフ
             fillData () {
                 this.dataCollection = {
                     labels: ['＋ 消費カロリー', 'ー 摂取カロリー'],
