@@ -11,7 +11,9 @@
         </div>
         <div class="reset">
           <button id="btn_reset" @click="reset();">リセット</button>
-<!--          <button id="draw" @click="draw();">draw確認</button>-->
+          <div class="judge">
+            <button class="btn btn-outline-success" @click="this.Data_post">終了</button>
+          </div>
         </div>
         <canvas ref="canvas" id="canvas" width="500" height="500"></canvas>
         <video ref="video" id="video" width="500" height="500" autoplay></video>
@@ -32,7 +34,12 @@ export default {
   // props:[{
   //   poses: [],
   // }],
-  data() {
+  data: function () {
+    const post_data = {
+      judge_ID: '',
+      burned_ID: '',
+      judge_rate: '',
+    }
     return {
       video: {},
       posenet: '',
@@ -43,6 +50,10 @@ export default {
       reset_btn: document.getElementById("btn_reset"),
       keypoint: '',
       canvas: {},
+      judge_ID: '',
+      burned_ID: '',
+      judge_rate: '',
+      post_data: post_data,
     }
   },
 
@@ -68,10 +79,10 @@ export default {
       console.log("姿勢判定処理を開始します")
       ref.draw(val)
     })
-        // .then(
-        // function (){
-        //   this.draw(results)
-        // }
+    // .then(
+    // function (){
+    //   this.draw(results)
+    // }
     // );
     //canvasに描画が成功したのでvideo要素を見えないようにする
     // this.video.hide();
@@ -97,18 +108,18 @@ export default {
 
 
     draw: function (poses) {
-      // let poses = this.poses;
+      this.poses = poses;
       console.log('描画を開始')
       // poses.length +=1;
-      console.log(poses)
-      if (poses.length > 0) {
-        let pose = poses[0].pose;
+      console.log(this.poses)
+      if (this.poses.length > 0) {
+        let pose = this.poses[0].pose;
         this.keypoint = pose.keypoints[0];
         // console.log('部位名：' + this.keypoint.part);
-        for (let i = 0; i < poses.length; i++) {
+        for (let i = 0; i < this.poses.length; i++) {
           // poseが持つ情報を出力
           console.log('poseが持つ情報を出力します')
-          let pose = poses[i].pose
+          let pose = this.poses[i].pose
           //本当は0.6以上だが挙動確認のため低い値に設定
           if (pose.score >= 0.3) {
             console.log("ok");
@@ -148,10 +159,10 @@ export default {
     },
 
 
-    drawKeypoints: function (poses) {
+    drawKeypoints: function () {
       console.log('drawKeypoints起動')
       for (let i = 0; i < this.poses.length; i++) {
-        let pose = poses[i].pose;
+        let pose = this.poses[i].pose;
         for (let j = 0; j < pose.length; j++) {
           this.keypoint = pose.keypoints[j];
           if (this.keypoint > 0.2) {
@@ -168,16 +179,31 @@ export default {
 
 
     drawSkeleton: function () {
+      console.log('drawSkeleton起動')
+      console.log(this.poses.length)
       for (let i = 0; i < this.poses.length; i++) {
         let skeleton = this.poses[i].skeleton;
+        console.log('skeleton:'+skeleton)
         for (let j = 0; j < skeleton.length; j++) {
           let partA = skeleton[j][0];
           let partB = skeleton[j][1];
 
           //骨格の線を引く
-          stroke('rgb(0,255,0)');
+          this.canvas = this.$refs.canvas
+          let ctx = this.canvas.getContext("2d");
+          ctx.strokeStyle = "green";
+
+          // ctc.stroke();
+          // this.canvas.getContext('2d').stroke('rgb(0,255,0)')
+          // stroke('rgb(0,255,0)');
+          console.log('骨格の線を描画します')
           // strokeWeight(5);
-          line(partA.position.x, partA.position.y, partB.position.x, partB.position.y);
+          console.log(partA.position.x)
+          console.log(partA.position.y)
+          console.log(partB.position.x)
+          console.log(partB.position.y)
+          ctx.strokeRect(partA.position.x, partA.position.y, partB.position.x, partB.position.y)
+          // line(partA.position.x, partA.position.y, partB.position.x, partB.position.y);
         }
       }
     },
@@ -186,7 +212,43 @@ export default {
     reset: function () {
       console.log("リセットしました")
       this.count_value = 0;
+    },
+    //-------------------------データ保存処理--------------------------------------
+    Data_post:async function () {
+      let date = new Date()
+      const URL = "https://fat3lak1i2.execute-api.us-east-1.amazonaws.com/acsys/users/schedule/motion/judge"
+      this.post_data = {
+        account_token:this.$store.state.accountToken,
+        judge_rate: Number(this.judge_rate),
+        add_date:Number(date),
+        motion_calorie: this.calorie,
+        motion_name: this.title,
+      }
+
+      const json_data = JSON.stringify(this.post_data)
+      await fetch(URL, {
+        mode: 'cors',
+        method: 'POST',
+        body: json_data,
+        headers: {'Content-type': 'application'},
+      })
+          .then(function (response) {
+            return response.json()
+          })
+          .then(data => {
+            const flg_data = data['isSuccess']
+            if(flg_data){
+              console.log('form_judge:OK')
+              this.$router.replace("/savecalorie")
+            }else {
+              console.log('form_judge:NG')
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
     }
   }
 }
+
 </script>

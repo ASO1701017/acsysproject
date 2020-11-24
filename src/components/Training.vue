@@ -30,8 +30,17 @@
                         </div>
                     </div>
                 </b-tab>
+
+                <b-tab title="挑戦する" active>
+                  <div class="row">
+                    <div class="text-center mt-3" >
+                      <router-link to="/formjudge" class="h5 text-success">フォームの判定をする</router-link>
+                    </div>
+                  </div>
+                </b-tab>
             </b-tabs>
         </b-card>
+
 
         <b-modal id="modal-center1" centered title="2回で1200カロリー消費する脂肪燃焼 鬼ヒート:1200kcal FAT BURNING">
             <b-embed
@@ -81,9 +90,6 @@
                 </b-button>
             </template>
         </b-modal>
-        <div class="text-center mt-3" >
-            <router-link to="/formjudge" class="h5 text-success">フォームの判定をする</router-link>
-        </div>
     </div>
 </template>
 
