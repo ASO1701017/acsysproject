@@ -11,8 +11,10 @@
             </p>
             <!--新しいパスワード-->
             <div class="form-group row mx-auto mt-5">
+                <label for="NewPass" class="col-sm-4  col-form-label text-center col-auto">新しいパスワード</label><br>
+                <input type="password" class="col-sm-8 col-auto form-control ml-xs-5 " id="NewPass" v-model="form.account_new_pass">
+                <b-container class="d-flex justify-content-center" style="">※6文字以上・半角英数字のみ</b-container>
                 <label for="NewPass" class="col-md-3  col-form-label text-center col-auto">新しいパスワード</label><br>
-                <input type="password" class="col-md-9 col-auto form-control ml-xs-5 " id="NewPass" v-model="form.account_new_pass">
             </div>
             <p class="text-danger text-center h5 col-9">
                 {{ NewPasswordResult }}
@@ -44,15 +46,18 @@
                     account_con_new_pass: "",
                 },
                 errors:[],
-                //バリデーション結果
+
                 OldPasswordResult: "",
                 NewPasswordResult: "",
                 ConNewPasswordResult: ""
+
             }
         },methods: {
             checkHandler: function (form, event) {
                 this.checkForm(event);
             },
+
+
             //-----------------------------バリデーション-------------------------------------
             checkForm: async function(event) {
                 let OldPass
@@ -73,6 +78,7 @@
                     OldPass = true
                     this.OldPasswordResult = ""
                 }
+
                 // 新しいパスワードのバリデーション
                 if(!this.form.account_new_pass){
                     this.NewPasswordResult = "新しいパスワードを入力してください"
@@ -101,6 +107,8 @@
                     NewPass = true
                     this.NewPasswordResult = ""
                 }
+
+
                 // 新しいパスワード確認のバリデーション
                 if(!this.form.account_con_new_pass){
                     this.ConNewPasswordResult = "もう一度入力してください"
@@ -114,6 +122,7 @@
                     ConNewPass = true
                     this.ConNewPasswordResult = ""
                 }
+
                 // バリデーションをクリアした時にパスワード更新
                 if(OldPass === true && NewPass === true && ConNewPass === true){
 
@@ -151,8 +160,17 @@
                             console.log(error)
                         })
                 }
+
+
                 event.preventDefault();
             },
+            created() {
+            }
         }
     }
+
 </script>
+
+<style scoped>
+
+</style>
