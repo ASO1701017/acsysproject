@@ -127,12 +127,13 @@
 
 <script>
     import inputMyModal from "./MyModal"
-    import Datepicker from "vuejs-datepicker";
-    import {ja} from 'vuejs-datepicker/dist/locale'
+    import Vue from 'vue'
+    import VCalendar from 'v-calendar'
+    Vue.use(VCalendar)
 
     export default {
         name: "IntakeCalorieRegistration",
-        components: { inputMyModal,Datepicker  },
+        components: { inputMyModal },
         data(){
             return{
                 //モーダル
@@ -204,6 +205,7 @@
             addInputData(){
                 //バリデーション
                 let inputFoodCheck = false
+                let selectedDateCheck = false
                 //空だった時
                 let inputCalorieCheck = false
                 if (!this.inputFood){
@@ -240,6 +242,15 @@
                     this.inputCalorieResult=""
                     inputCalorieCheck = true
                 }
+                //日付未入力
+                if(!this.selectedDate){
+                    this.selectedDateResult="日付を選択してください"
+                    selectedDateCheck = false
+                }else{
+                    selectedDateCheck = true
+                    this.selectedDateResult=""
+                }
+
                 //日付加工
                 let time = this.selectedDate.getFullYear() + ("0" + (this.selectedDate.getMonth() + 1)).slice(-2) +("0" + this.selectedDate.getDate()).slice(-2)
                 //リストに追加
