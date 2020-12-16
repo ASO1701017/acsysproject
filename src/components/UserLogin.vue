@@ -4,10 +4,12 @@
             <div class="text-success mt-5 pt-5 mb-4 text-center h1 font-weight-bold">
                 acsys にログイン
             </div>
+            <!--メールアドレスかパスワード間違っていた時のエラー表示-->
             <div v-if="!ErrorMessage" class="text-center h3 text-danger">
                 メールアドレスかパスワードが間違っています
             </div>
             <form>
+                <!--メールアドレスの入力-->
                 <div class="form-group mx-auto">
                     <label for="Mail"></label>
                     <input type="email" id="Mail" placeholder="メールアドレス" v-model="loginForm.LoginMailAddress" class="form-control col-lg-6 col-md-8 mx-auto">
@@ -15,6 +17,7 @@
                         {{ loginValidation.loginMailResult }}
                     </p>
                 </div>
+                <!--パスワードの入力-->
                 <div class="form-group">
                     <label for="Pass"></label>
                     <input type="Password" id="Pass" placeholder="パスワード" v-model="loginForm.LoginPassword" class="form-control col-lg-6 col-md-8 mt-1 mx-auto">
@@ -22,10 +25,12 @@
                         {{ loginValidation.loginPassResult }}
                     </p>
                 </div>
+                <!--ログインボタン-->
                 <div class="col text-center">
                     <button v-on:click="checkFrom" class="btn btn-success btn-lg mx-auto col-lg-6 col-md-8 mt-4">ログイン</button>
                 </div>
             </form>
+            <!--新規登録リンク-->
             <div class="text-center mt-3" >
                 <router-link to="/signup" class="h5 text-success">アカウントの新規作成</router-link>
             </div>
@@ -39,15 +44,18 @@
 
         data(){
             return{
+                //入力用の値
                 loginForm:{
                     LoginMailAddress : "",
                     LoginPassword:"",
                 },
+                //エラー表示用の値
                 ErrorMessage:true,
                 loginValidation:{
                     loginMailResult: "",
                     loginPassResult:"",
                 },
+                //通信時使用
                 loginArray:[],
                 loginResult:false,
             }
@@ -56,6 +64,7 @@
 
             getLogin:async function (mail,pass) {
 
+                //トークン生成
                 // 生成する文字列の長さ
                 const l = 32;
                 // 生成する文字列に含める文字セット
@@ -114,7 +123,6 @@
                         //エラーや存在しなかった場合
                         console.log("アカウントが存在しないもしくわエラー")
                         this.ErrorMessage = false
-                        alert("エラーが発生しました。もう一度やり直してください")
                     }
                 }else {
                     // バリデーションにはじかれた場合
