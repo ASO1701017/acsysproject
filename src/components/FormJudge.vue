@@ -5,10 +5,17 @@
     <p id='status'></p>
     <div class="container">
       <div class="dash-unit">
-        <h2 class="a-spacing-none">回数</h2>
+
+        <h2 class="a-spacing-none" v-model="form.count_value">回数</h2>
         <div class="count">
-          <div id="disp_count">{{ count_value }}</div>
+          <div id="disp_count" v-model="form.account_level">{{ count_value }}</div>
         </div>
+
+        <h3>選択トレーニング</h3>
+        <div id="training">
+          <Training v-on:select-category="this.selectCategory"/>
+        </div>
+
         <div class="reset">
           <button id="btn_reset" @click="reset();">リセット</button>
           <div class="judge">
@@ -23,22 +30,38 @@
 
 </template>
 
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<script>
+export default {
+  props:{
+    EventLink:{
+      type:String,
+    }
+  }
+}
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"></script>
 
 <script>
 import p5 from 'p5'
 import ml5 from 'ml5'
+import Training from '@/components/Training';
 
 export default {
-  // props:[{
-  //   poses: [],
-  // }],
+  components:{
+    Training
+  },
+  props:{
+    EventLink:{
+      type: String,
+      default:''
+    }
+  },
   data: function () {
     const post_data = {
       judge_ID: '',
       burned_ID: '',
       judge_rate: '',
+      count_disp: document.getElementById("dips_count"),
     }
     return {
       video: {},
@@ -50,10 +73,11 @@ export default {
       reset_btn: document.getElementById("btn_reset"),
       keypoint: '',
       canvas: {},
-      judge_ID: '',
-      burned_ID: '',
-      judge_rate: '',
-      post_data: post_data,
+      // judge_id: '',
+      // burned_id: '',
+      // judge_rate: '',
+      // judge_count:'',
+      // post_data: post_data,
     }
   },
 
@@ -67,6 +91,16 @@ export default {
       })
     }
 
+    //判定ラインの線を引く
+    // this.canvas = this.$refs.canvas
+    // let ctx = this.canvas.getContext("2d");
+    // ctx.moveTo( 300, 300 ) ;
+    // ctx.lineTo( 500, 300 )
+    // ctx.strokeStyle = "red" ;
+    // ctx.lineWidth = 5;
+    // ctx.stroke();
+
+
     //poseNetのセットアップ処理
     console.log("挙動確認")
     // this.video = p5.createCapture();
@@ -75,8 +109,6 @@ export default {
     const ref = this;
     this.posenet.on('pose', function (results) {
       val = this.poses = results;
-      console.log("pose_length:", val.length)
-      console.log("姿勢判定処理を開始します")
       ref.draw(val)
     })
     // .then(
@@ -84,10 +116,12 @@ export default {
     //   this.draw(results)
     // }
     // );
-    //canvasに描画が成功したのでvideo要素を見えないようにする
+    // canvasに描画が成功したのでvideo要素を見えないようにする
     // this.video.hide();
   },
   methods: {
+    selectCategory(value){
+      },
     //canvasにVIDEOの内容を描画
     capture () {
       this.canvas = this.$refs.canvas
@@ -106,11 +140,9 @@ export default {
       this.count_disp.innerHTML = this.count_value;
     },
 
-
     draw: function (poses) {
       this.poses = poses;
       console.log('描画を開始')
-      // poses.length +=1;
       console.log(this.poses)
       if (this.poses.length > 0) {
         let pose = this.poses[0].pose;
@@ -152,19 +184,26 @@ export default {
       else {
         console.log('pose情報が見当たりません')
       }
-      //判定ラインの線を引く
-      // fill(255, 0, 0);
-      // stroke('red');
-      // line(0, 250, 600, 250);
+      // //判定ラインの線を引く
+      // this.canvas = this.$refs.canvas
+      // let ctx = this.canvas.getContext("2d");
+      // ctx.moveTo( 0, 0 ) ;
+      // ctx.lineTo( 200, 200 )
+      // ctx.strokeStyle = "red" ;
+      // ctx.lineWidth = 5;
+      // ctx.stroke();
     },
+
 
 
     drawKeypoints: function () {
       console.log('drawKeypoints起動')
+      console.log(this.poses.length)
       for (let i = 0; i < this.poses.length; i++) {
         let pose = this.poses[i].pose;
         for (let j = 0; j < pose.length; j++) {
           this.keypoint = pose.keypoints[j];
+          console.log('keypoint:'+this.keypoint)
           if (this.keypoint > 0.2) {
             console.log('線を引きます')
             // シェイプの塗りに使用するカラーを設定
@@ -202,11 +241,16 @@ export default {
           console.log(partA.position.y)
           console.log(partB.position.x)
           console.log(partB.position.y)
-          ctx.strokeRect(partA.position.x, partA.position.y, partB.position.x, partB.position.y)
+          console.log("stroke起動")
+          console.log("トレーニング内容："+this.EventLink)
+          ctx.lineTo(partA.position.x, partA.position.y)
+          ctx.stroke()
           // line(partA.position.x, partA.position.y, partB.position.x, partB.position.y);
         }
       }
     },
+
+    //Uncaught (in promise) TypeError: Failed to execute 'stroke' on 'CanvasRenderingContext2D': parameter 1 is not of type 'Path2D'
 
     //回数の値をリセットするメソッド
     reset: function () {
@@ -216,13 +260,13 @@ export default {
     //-------------------------データ保存処理--------------------------------------
     Data_post:async function () {
       let date = new Date()
+      let calories = ''
       const URL = "https://fat3lak1i2.execute-api.us-east-1.amazonaws.com/acsys/users/schedule/motion/judge"
       this.post_data = {
-        account_token:this.$store.state.accountToken,
-        judge_rate: Number(this.judge_rate),
-        add_date:Number(date),
-        motion_calorie: this.calorie,
-        motion_name: this.title,
+        judgeRate: Number(this.$store.state.judge_rate), //判定結果（カウント値）
+        add_date:Number(this.$store.state.add_date),
+        motion_calorie: this.$store.state.motion_calorie,
+        motion_name: this.$store.state.motion_name,
       }
 
       const json_data = JSON.stringify(this.post_data)
@@ -238,7 +282,7 @@ export default {
           .then(data => {
             const flg_data = data['isSuccess']
             if(flg_data){
-              console.log('form_judge:OK')
+              this.$store.commit('judgeADD',check)
               this.$router.replace("/savecalorie")
             }else {
               console.log('form_judge:NG')

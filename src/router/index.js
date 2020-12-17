@@ -97,6 +97,7 @@ const router = new Router({
             path: "/formjudge",
             name: "formjudge",
             component: FormJudge,
+            props: true
         },
         {
             //統計
