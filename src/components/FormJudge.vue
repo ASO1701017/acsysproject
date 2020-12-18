@@ -6,9 +6,9 @@
     <div class="container">
       <div class="dash-unit">
 
-        <h2 class="a-spacing-none" v-model="form.count_value">回数</h2>
+        <h2 class="a-spacing-none">回数</h2>
         <div class="count">
-          <div id="disp_count" v-model="form.account_level">{{ count_value }}</div>
+          <div id="disp_count">{{ count_value }}</div>
         </div>
 
         <h3>選択トレーニング</h3>
@@ -32,11 +32,11 @@
 
 <script>
 export default {
-  props:{
-    EventLink:{
-      type:String,
-    }
-  }
+  // props:{
+  //   EventLink:{
+  //     type:String,
+  //   }
+  // }
 }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"></script>
@@ -44,18 +44,10 @@ export default {
 <script>
 import p5 from 'p5'
 import ml5 from 'ml5'
-import Training from '@/components/Training';
+// import Training from '@/components/Training';
 
 export default {
-  components:{
-    Training
-  },
-  props:{
-    EventLink:{
-      type: String,
-      default:''
-    }
-  },
+
   data: function () {
     const post_data = {
       judge_ID: '',
@@ -258,12 +250,10 @@ export default {
       this.count_value = 0;
     },
     //-------------------------データ保存処理--------------------------------------
-    Data_post:async function () {
-      let date = new Date()
-      let calories = ''
+    Data_post:async function (array) {
       const URL = "https://fat3lak1i2.execute-api.us-east-1.amazonaws.com/acsys/users/schedule/motion/judge"
       this.post_data = {
-        judgeRate: Number(this.$store.state.judge_rate), //判定結果（カウント値）
+        // judgeRate: Number(this.$store.state.judge_rate), //判定結果（カウント値）
         add_date:Number(this.$store.state.add_date),
         motion_calorie: this.$store.state.motion_calorie,
         motion_name: this.$store.state.motion_name,

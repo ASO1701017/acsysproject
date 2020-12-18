@@ -161,7 +161,7 @@
                     days: [6, 0],
                 },
                 //日本語設定
-                ja:ja,
+                ja:'ja',
                 //日付制約
                 disabledDates: {
                     from: new Date(),

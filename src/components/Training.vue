@@ -109,7 +109,7 @@
 
 <script>
 export default {
-  name: "Training",
+  // name: "Training",
   data(){
     return{
       title:"",
