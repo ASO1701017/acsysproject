@@ -1,6 +1,6 @@
 <template>
     <div id="#app">
-        <div class="jumbotron jumbotron-fluid bg-dark mt-5">
+        <div class="jumbotron jumbotron-fluid bg-dark ">
             <div class="container">
                 <h1 class="display-4 font-weight-lighter" style="font-family: Helvetica,'Yu Gothic UI',serif">更新情報</h1>
             </div><!-- /.container -->

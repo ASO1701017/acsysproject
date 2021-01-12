@@ -1,7 +1,7 @@
 <template>
     <div id="#app" class="container">
         <section>
-            <div class="text-success mt-5 pt-5 mb-4 text-center h1 font-weight-bold">
+            <div class="text-success pt-5 mb-4 text-center h1 font-weight-bold">
                 acsys にログイン
             </div>
             <!--メールアドレスかパスワード間違っていた時のエラー表示-->

@@ -1,7 +1,7 @@
 <template>
     <div id="app" class="container">
         <!--タイトル-->
-        <div class="text-success mt-5 pt-5  mb-3 text-center h1 font-weight-bold">
+        <div class="text-success pt-5  mb-3 text-center h1 font-weight-bold">
             acsys に新規登録
         </div>
         <form>
