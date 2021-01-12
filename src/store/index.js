@@ -21,6 +21,8 @@ export default new Vuex.Store({
         intakeCalorie:'',
         consumptionCalorie:'',
         calorie:'',
+        //ローディングアニメーション
+        loading: false
     },
 
     mutations:{
@@ -56,7 +58,11 @@ export default new Vuex.Store({
             state.calorie = data.userCalorie
             state.intakeCalorie = data.userIntakeCalorie
             state.consumptionCalorie = data.userConsumptionCalorie
-        }
+        },
+        //ローディングアニメーション
+        setLoading(state, payload) {
+            state.loading = payload
+        },
     },
 
     plugins: [createPersistedState({

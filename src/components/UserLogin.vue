@@ -64,6 +64,8 @@
 
             getLogin:async function (mail,pass) {
 
+                this.$store.commit("setLoading", true)
+
                 //トークン生成
                 // 生成する文字列の長さ
                 const l = 32;
@@ -104,11 +106,13 @@
                     .catch(function (error) {
                         console.log(error)
                     })
+                this.$store.commit("setLoading", false)
                 if (this.loginResult){
                     return newToken
                 }else{
                     return 0
                 }
+
             },
 
             login:async function () {
