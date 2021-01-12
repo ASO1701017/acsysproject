@@ -5,35 +5,35 @@
                 acsys にログイン
             </div>
             <!--メールアドレスかパスワード間違っていた時のエラー表示-->
-            <div v-if="!ErrorMessage" class="text-center h3 text-danger">
+            <div v-if="!ErrorMessage" class="text-center h4 text-danger">
                 メールアドレスかパスワードが間違っています
             </div>
             <form>
                 <!--メールアドレスの入力-->
-                <div class="form-group mx-auto">
-                    <label for="Mail"></label>
-                    <input type="email" id="Mail" placeholder="メールアドレス" v-model="loginForm.LoginMailAddress" class="form-control col-lg-6 col-md-8 mx-auto">
-                    <p class="text-danger text-center h5">
-                        {{ loginValidation.loginMailResult }}
-                    </p>
+                <div class="form-group row mx-auto mt-5">
+                    <label for="Mail" class="col-md-3  col-form-label text-right col-auto">メールアドレス</label><br>
+                    <input type="email" class="col-md-7 col-auto form-control " id="Mail" v-model="loginForm.LoginMailAddress" v-bind:class="{'is-invalid':!mailResult}">
+                    <div class="invalid-feedback text-center">{{loginValidation.loginMailResult }}</div>
                 </div>
-                <!--パスワードの入力-->
-                <div class="form-group">
-                    <label for="Pass"></label>
-                    <input type="Password" id="Pass" placeholder="パスワード" v-model="loginForm.LoginPassword" class="form-control col-lg-6 col-md-8 mt-1 mx-auto">
-                    <p class="text-danger text-center h5">
-                        {{ loginValidation.loginPassResult }}
-                    </p>
+
+                <div class="form-group row mx-auto mt-4">
+                    <label for="Pass" class="col-md-3  col-form-label text-right col-auto">パスワード</label><br>
+                    <input type="password" class="col-md-7 col-auto form-control " id="Pass" v-model="loginForm.LoginPassword" v-bind:class="{'is-invalid':!passResult}"><br>
+                    <div class="invalid-feedback text-center">{{loginValidation.loginPassResult}}</div>
                 </div>
+
+
                 <!--ログインボタン-->
                 <div class="col text-center">
                     <button v-on:click="checkFrom" class="btn btn-success btn-lg mx-auto col-lg-6 col-md-8 mt-4">ログイン</button>
                 </div>
             </form>
+
             <!--新規登録リンク-->
             <div class="text-center mt-3" >
                 <router-link to="/signup" class="h5 text-success">アカウントの新規作成</router-link>
             </div>
+
         </section>
     </div>
 </template>
@@ -58,12 +58,15 @@
                 //通信時使用
                 loginArray:[],
                 loginResult:false,
+                //フォームに使用
+                mailResult:true,
+                passResult:true,
             }
         },
         methods:{
-
             getLogin:async function (mail,pass) {
 
+                //ローディングアニメーションを起動
                 this.$store.commit("setLoading", true)
 
                 //トークン生成
@@ -106,13 +109,13 @@
                     .catch(function (error) {
                         console.log(error)
                     })
+                //ローディングアニメーションを終了
                 this.$store.commit("setLoading", false)
                 if (this.loginResult){
                     return newToken
                 }else{
                     return 0
                 }
-
             },
 
             login:async function () {
@@ -142,18 +145,22 @@
                 if (!this.loginForm.LoginMailAddress) {
                     this.loginValidation.loginMailResult="メールアドレスを入力してください"
                     console.log("メールアドレスの文字が入力されていない")
+                    this.mailResult = false
                 }else {
                     this.loginValidation.loginMailResult=""
                     LoginMail = true
+                    this.mailResult = true
                 }
 
                 //パスワードの入力フォームのバリデーション
                 if (!this.loginForm.LoginPassword) {
                     this.loginValidation.loginPassResult="パスワードを入力してください"
                     console.log("パスワードの文字が入力されていない")
+                    this.passResult = false
                 }else {
                     this.loginValidation.loginPassResult=""
                     LoginPass = true
+                    this.passResult = true
                 }
 
                 //両方trueの時に実行。loginを呼び出す
