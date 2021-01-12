@@ -194,6 +194,9 @@
             //----------------------------データ保存---------------------------------------
             Data_post:async function (array) {
 
+                //ローディングアニメーションを起動
+                this.$store.commit("setLoading", true)
+
                 // 生成する文字列の長さ
                 const l = 32;
                 // 生成する文字列に含める文字セット
@@ -232,12 +235,14 @@
                             console.log('新期登録ok')
                             this.signupResult = true
                         }else {
-                            console.log('新期登録ok')
+                            console.log('新期登録ng')
                         }
                     })
                     .catch(function (error) {
                         console.log(error)
                     })
+                //ローディングアニメーションを終了
+                this.$store.commit("setLoading", false)
                 if (this.signupResult){
                     return newToken
                 }else{
@@ -397,8 +402,7 @@
                         await this.$router.replace("/savecalorie")
                     }else {
                         //エラーが発生した場合
-                        console.log("エラー発生")
-                        alert("エラーが発生しました。もう一度やり直してください")
+                        alert("新規登録に失敗しました。もう一度やり直してください")
                     }
                 }else {
                     this.scrollTop()
