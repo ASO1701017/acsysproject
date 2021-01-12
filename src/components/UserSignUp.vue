@@ -87,31 +87,32 @@
             <div id="ActiveLevel" class="form-group mt-4 mx-auto row">
                 <label for="ActiveLevel" class="col-md-3  col-form-label text-right col-auto">身体活動レベル</label>
                 <select name=”ActiveLevel” v-model="form.account_level"  class="col-md-7 col-auto form-control" v-bind:class="{'is-invalid':!levelResult}">
-                    <option value=1 selected="selected">レベルⅠ</option>
+                    <option disabled value="">選択してください</option>
+                    <option value=1>レベルⅠ</option>
                     <option value=2>レベルⅡ</option>
                     <option value=3>レベルⅢ</option>
                 </select>
                 <div class="invalid-feedback text-center">{{SignupValidation.SignupLevelResult}}</div>
-                <div>
-                    <table class="table col-md-10 mx-auto mt-3">
-                        <tr>
-                            <td class="text-nowrap">概要</td>
-                            <td>身体活動レベルとは、1日あたりの総エネルギー消費量を1日あたりの基礎代謝量で割った指標です。</td>
-                        </tr>
-                        <tr>
-                            <td class="text-nowrap">レベルⅠ</td>
-                            <td>生活の大部分が座位で、静的な活動が中心の場合</td>
-                        </tr>
-                        <tr>
-                            <td class="text-nowrap">レベルⅡ</td>
-                            <td>座位中心の仕事だが、職場内での移動や立位での作業・接客等、あるいは通勤・買物・家事、軽いスポーツ等のいずれかを含む場合</td>
-                        </tr>
-                        <tr>
-                            <td class="text-nowrap">レベルⅢ</td>
-                            <td>移動や立位の多い仕事への従事者。あるいは、スポーツなど余暇における活発な運動習慣をもっている場合</td>
-                        </tr>
-                    </table>
-                </div>
+            </div>
+            <div>
+                <table class="table col-md-10 mx-auto mt-3">
+                    <tr>
+                        <td class="text-nowrap">概要</td>
+                        <td>身体活動レベルとは、1日あたりの総エネルギー消費量を1日あたりの基礎代謝量で割った指標です。</td>
+                    </tr>
+                    <tr>
+                        <td class="text-nowrap">レベルⅠ</td>
+                        <td>生活の大部分が座位で、静的な活動が中心の場合</td>
+                    </tr>
+                    <tr>
+                        <td class="text-nowrap">レベルⅡ</td>
+                        <td>座位中心の仕事だが、職場内での移動や立位での作業・接客等、あるいは通勤・買物・家事、軽いスポーツ等のいずれかを含む場合</td>
+                    </tr>
+                    <tr>
+                        <td class="text-nowrap">レベルⅢ</td>
+                        <td>移動や立位の多い仕事への従事者。あるいは、スポーツなど余暇における活発な運動習慣をもっている場合</td>
+                    </tr>
+                </table>
             </div>
         </form>
         <div class="row mt-3 mb-5">
@@ -150,6 +151,7 @@
                 heightResult:true,
                 weightResult:true,
                 levelResult:true,
+                result:"",
                 //カレンダー入力に使用
                 //日付形式
                 DatePickerFormat: 'yyyy-MM-dd',
@@ -182,6 +184,13 @@
             checkHandler: function (array, event) {
                 this.checkForm(event);
             },
+            //Topへスクロール
+            scrollTop: function(){
+                window.scrollTo({
+                    top: 0,
+                    behavior: "instant"
+                })
+            },
             //----------------------------データ保存---------------------------------------
             Data_post:async function (array) {
 
@@ -199,7 +208,7 @@
                     account_name: array.account_name,
                     account_height: Number(array.account_height),
                     account_weight: Number(array.account_weight),
-                    account_birthday: Number(array.account_year + '' + ('00' + array.account_month).slice(-2) + '' + ('00' + array.account_day).slice(-2)),
+                    account_birthday: this.form.account_birthday.getFullYear() + ("0" + (this.form.account_birthday.getMonth() + 1)).slice(-2) +("0" + this.form.account_birthday.getDate()).slice(-2),
                     account_gender: array.account_gender,
                     account_level: array.account_level,
                     account_address: array.account_address,
@@ -239,6 +248,7 @@
 
             //-----------------------------バリデーション-------------------------------------
             checkForm:async function (event) {
+                this.errors.splice(-this.errors.length)
                 let re1 = /^[A-Za-z0-9][A-Za-z0-9_.-]*@[A-Za-z0-9_.-]+\.[A-Za-z0-9]+$/
                 let re3 = /^[A-Za-z0-9]+$/
 
@@ -314,7 +324,7 @@
                     this.errors.push(this.SignupValidation.SignupPasswordResult)
                     this.passResult = false
                 } else {
-                    this.passResult = false
+                    this.passResult = true
                     this.SignupValidation.SignupPasswordResult = ""
                 }
 
@@ -378,6 +388,7 @@
                 }
 
                 //バリデーションをクリアした時にsign-up
+                console.log(this.errors)
                 if (this.errors.length===0) {
                     const check = await this.Data_post(this.form)
                     if (check !== 0){
@@ -385,10 +396,12 @@
                         this.$store.commit('tokenUpdate',check)
                         await this.$router.replace("/savecalorie")
                     }else {
-                        //エラーや存在しなかった場合
-                        console.log("アカウントが存在しないもしくわエラー")
+                        //エラーが発生した場合
+                        console.log("エラー発生")
                         alert("エラーが発生しました。もう一度やり直してください")
                     }
+                }else {
+                    this.scrollTop()
                 }
                 event.preventDefault();
             },
