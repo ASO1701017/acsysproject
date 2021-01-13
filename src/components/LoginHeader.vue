@@ -114,9 +114,8 @@
             },
             //ログアウト
             logout(){
-
+                //モーダルを閉じる
                 this.modal = false
-
                 //ローディングアニメーションを起動
                 this.$store.commit("setLoading", true)
 
@@ -149,7 +148,6 @@
                             alert("エラーが発生しました。もう一度やり直してください")
                         }
                     })
-
             },
         },
         computed:{
