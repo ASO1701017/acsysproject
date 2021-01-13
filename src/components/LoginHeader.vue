@@ -101,7 +101,6 @@
                 })
                 .catch(function (error) {
                     console.log(error)
-                    alert("エラーが発生しました。もう一度やり直してください")
                 })
         },
         methods:{
