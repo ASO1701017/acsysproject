@@ -114,6 +114,12 @@
             },
             //ログアウト
             logout(){
+
+                this.modal = false
+
+                //ローディングアニメーションを起動
+                this.$store.commit("setLoading", true)
+
                 const URL = "https://fat3lak1i2.execute-api.us-east-1.amazonaws.com/acsys/users/logout"
                 this.dataGet={
                     account_token:this.userToken
@@ -133,12 +139,17 @@
                             console.log('ログアウト:ok')
                             //ログアウト時にユーザー情報を削除
                             this.$store.commit("tokenDelete")
+                            //ローディングアニメーションを終了
+                            this.$store.commit("setLoading", false)
                             this.$router.replace("/")
                         }else {
                             console.log('ログアウト:ng')
+                            //ローディングアニメーションを終了
+                            this.$store.commit("setLoading", false)
                             alert("エラーが発生しました。もう一度やり直してください")
                         }
                     })
+
             },
         },
         computed:{
