@@ -1,6 +1,7 @@
 <template>
     <div class="container">
-        <h2 class="pt-5 pb-4">現在の貯金は<span class="h1">{{totalCalorie}}</span>kcal</h2>
+        <h3 class="pt-5 pb-4" v-if="this.dataFlg">現在の貯金は<span class="h1">{{totalCalorie}}</span>kcal</h3>
+        <h2 class="pt-5 pb-4 text-danger" v-if="!this.dataFlg">エラーが発生しました。もう一度やり直してください</h2>
         <div class="row">
             <ul class="col-lg-6 col-auto list-group">
                 <li class="list-group-item list-group-item-primary lead">今日の貯金:{{todayCalorie}}kcal</li>
@@ -42,9 +43,15 @@
                 //グラフの関数
                 dataCollection: null,
                 dataOptions:null,
+                //エラー表示
+                dataFlg:true,
             }
         },
         async created() {
+
+            //ローディングアニメーションを起動
+            this.$store.commit("setLoading", true)
+
             //カロリーデータ取得
             const URL = "https://fat3lak1i2.execute-api.us-east-1.amazonaws.com/acsys/users/calorie"
             let dataGet={
@@ -60,6 +67,7 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log("ユーザーカロリー取得:ok")
+                    this.dataFlg=true
                     this.totalCalorie =data["difference_calorie"]
                     this.todayPlusCalorie = data["today_intaked"]
                     this.todayMinusCalorie  = data["today_burned"]
@@ -74,7 +82,7 @@
                 })
                 .catch(function (error) {
                     console.log(error)
-                    alert("エラーが発生しました。もう一度やり直してください")
+                    this.dataFlg=false
                 })
 
             //貯金を求める
@@ -88,6 +96,9 @@
             } else{
                 this.comment = "貯金がマイナスになってしまいましたね。こんな時は運動する量を増やしたり、食事を見直してみたりしましょう！"
             }
+
+            //ローディングアニメーションを終了
+            this.$store.commit("setLoading", false)
         },
         mounted () {
             this.fillData()
@@ -165,6 +176,3 @@
         },
     }
 </script>
-
-<style scoped>
-</style>
