@@ -1,7 +1,6 @@
 <template>
     <div class="container">
-        <h3 class="pt-5 pb-4" v-if="this.dataFlg">現在の貯金は<span class="h1">{{totalCalorie}}</span>kcal</h3>
-        <h2 class="pt-5 pb-4 text-danger" v-if="!this.dataFlg">エラーが発生しました。もう一度やり直してください</h2>
+        <h3 class="pt-5 pb-4">現在の貯金は<span class="h1">{{totalCalorie}}</span>kcal</h3>
         <div class="row">
             <ul class="col-lg-6 col-auto list-group">
                 <li class="list-group-item list-group-item-primary lead">今日の貯金:{{todayCalorie}}kcal</li>
@@ -43,8 +42,6 @@
                 //グラフの関数
                 dataCollection: null,
                 dataOptions:null,
-                //エラー表示
-                dataFlg:true,
             }
         },
         async created() {
@@ -67,7 +64,6 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log("ユーザーカロリー取得:ok")
-                    this.dataFlg=true
                     this.totalCalorie =data["difference_calorie"]
                     this.todayPlusCalorie = data["today_intaked"]
                     this.todayMinusCalorie  = data["today_burned"]
@@ -81,8 +77,8 @@
                     this.$store.commit('calorieAdd',calorieInf)
                 })
                 .catch(function (error) {
-                    console.log(error)
-                    this.dataFlg=false
+                    console.log("エラー発生" + error)
+                    alert("エラーが発生しました。再読み込みをしてください。もし治らなければ報告してくださると助かります")
                 })
 
             //貯金を求める
