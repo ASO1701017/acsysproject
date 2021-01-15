@@ -62,37 +62,30 @@
             </div>
         </b-modal>
 
-        <div class="example-modal-window">
-            <!-- コンポーネント MyModal -->
-            <inputMyModal @close="closeSelectModal" v-if="selectModal">
-                <!-- default スロットコンテンツ -->
-                <h4 class="px-lg-5 mx-5">分類を選択してください</h4>
-                <table class="table table-hover table-sm ">
-                    <thead>
+        <!--選択第一モーダル-->
+        <b-modal ref="selectModal" title="分類を選択してください" centered hide-footer scrollable >
+            <table class="table table-hover table-sm ">
+                <thead>
                     <tr class="table-info">
                         <th class="genre">分類</th>
                     </tr>
-                    </thead>
-                    <tbody>
+                </thead>
+                <tbody>
                     <tr v-for="item in genreBox" v-bind:key="item.id">
                         <td @click="getFood(item)">{{ item.genre_name }}</td>
                     </tr>
-                    </tbody>
-                </table>
-                <!-- /default -->
-                <!-- footer スロットコンテンツ -->
-                <template slot="footer">
-                    <button @click="closeSelectModal" class="btn btn-outline-secondary">キャンセル</button>
-                </template>
-                <!-- /footer -->
-            </inputMyModal>
-        </div>
+                </tbody>
+            </table>
+            <button @click="closeSelectModal" class="btn btn-outline-secondary float-right mr-3">キャンセル</button>
+        </b-modal>
 
-        <div class="example-modal-window">
-            <!-- コンポーネント MyModal -->
-            <inputMyModal @close="closeFoodSelectModal" v-if="selectFoodModal">
-                <!-- default スロットコンテンツ -->
-                <h4 class="px-lg-5 mx-5">食べ物を選択してください</h4>
+        <!--選択第二モーダル-->
+        <b-modal ref="selectFoodModal" title="食べ物を選択してください" centered hide-footer scrollable>
+            <div v-if="!spiner">
+                <button class="btn btn-primary" type="button" disabled>
+                    <span class="spinner-border" role="status" aria-hidden="true"></span> Loading...</button>
+            </div>
+            <div v-if="spiner">
                 <table class="table table-hover table-sm ">
                     <thead>
                     <tr class="table-info">
@@ -107,35 +100,25 @@
                     </tr>
                     </tbody>
                 </table>
-                <!-- /default -->
-                <!-- footer スロットコンテンツ -->
-                <template slot="footer">
-                    <button @click="closeFoodSelectModal" class="btn btn-outline-secondary">キャンセル</button>
-                </template>
-                <!-- /footer -->
-            </inputMyModal>
-        </div>
-
+            </div>
+            <button @click="closeFoodSelectModal" class="btn btn-outline-secondary float-right mr-3">キャンセル</button>
+        </b-modal>
     </div>
 </template>
 
 <script>
-    import inputMyModal from "./MyModal"
     import Datepicker from "vuejs-datepicker";
     import {ja} from 'vuejs-datepicker/dist/locale'
 
     export default {
         name: "IntakeCalorieRegistration",
-        components: { inputMyModal,Datepicker},
+        components: {Datepicker},
         data(){
             return{
-                //モーダル
-                selectModal:false,
-                selectFoodModal:false,
                 //直接入力のデータ
                 inputFood:"",
                 inputCalorie:"",
-                //エラー名入れ
+                //直接入力エラー名入れ
                 inputFoodResult:"",
                 inputCalorieResult:"",
                 //入力欄エラー判定
@@ -162,6 +145,8 @@
                 //分類
                 genreBox:[],
                 foodBox:[],
+                //スピナー
+                spiner:false,
             }
         },
         methods:{
@@ -189,19 +174,19 @@
             },
             //選択入力のモーダルを開く
             openSelectModal(){
-                this.selectModal = true
+                this.$refs['selectModal'].show()
             },
             //選択入力のモーダルを閉じる
             closeSelectModal() {
-                this.selectModal = false
+                this.$refs['selectModal'].hide()
             },
             //選択入力のモーダルを開く
             openFoodSelectModal(){
-                this.selectFoodModal = true
+                this.$refs['selectFoodModal'].show()
             },
             //選択入力のモーダルを閉じる
             closeFoodSelectModal() {
-                this.selectFoodModal = false
+                this.$refs['selectFoodModal'].hide()
             },
             addInputData(){
                 //バリデーションチェック
@@ -258,8 +243,9 @@
             },
             //食べ物の取得
             getFood:async function(item){
-                this.selectModal = false
+                this.closeSelectModal()
                 this.openFoodSelectModal()
+                this.spiner = false
                 const URL = "https://fat3lak1i2.execute-api.us-east-1.amazonaws.com/acsys/calorie/food"
 
                 let getFoodItem ={
@@ -282,6 +268,7 @@
                         console.log("食べ物取得:ng")
                         alert("エラーが発生しました。もう一度やり直してください")
                     })
+                this.spiner = true
             },
             //リストに追加
             addSelectData(food,calorie){
