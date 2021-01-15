@@ -14,25 +14,25 @@
         <!--リスト-->
         <table class="table table-hover mt-1 table-sm col-auto">
             <thead>
-            <tr class="table-info">
-                <th class="addDate">日付</th>
-                <th class="food">食品</th>
-                <th class="calorie">カロリー</th>
-                <th class="delete">削除</th>
-            </tr>
+                <tr class="table-info">
+                    <th class="addDate">日付</th>
+                    <th class="food">食品</th>
+                    <th class="calorie">カロリー</th>
+                    <th class="delete">削除</th>
+                </tr>
             </thead>
             <tbody>
-            <tr v-for="item in addItem" v-bind:key="item.id">
-                <td>{{ item.add_date }}</td>
-                <td>{{ item.food_name }}</td>
-                <td>{{ item.food_calorie }}kcal</td>
-                <td class="deleteButton">
-                    <!-- 削除ボタン-->
-                    <button v-on:click="removeItem(item)" class="btn btn-outline-danger btn-sm">ー</button>
-                </td>
-            </tr>
-            <!--リストが空だった時-->
-            <td v-if="!addItem.length">リストは空です</td>
+                <tr v-for="item in addItem" v-bind:key="item.id">
+                    <td>{{ item.add_date }}</td>
+                    <td>{{ item.food_name }}</td>
+                    <td>{{ item.food_calorie }}kcal</td>
+                    <td class="deleteButton">
+                        <!-- 削除ボタン-->
+                        <button v-on:click="removeItem(item)" class="btn btn-outline-danger btn-sm">ー</button>
+                    </td>
+                </tr>
+                <!--リストが空だった時-->
+                <td v-if="!addItem.length">リストは空です</td>
             </tbody>
         </table>
         <!--合計-->
@@ -40,33 +40,27 @@
             <h4 class="col-xs-6 col-auto pt-1 pb-2">摂取カロリー合計：{{sumCalories}}kcal</h4>
         </div>
         <div class="row">
-            <button @click="openInputModal" class="btn btn-outline-info col-lg-2 col-auto">入力して追加する</button>
-<!--            <button @click="openSelectModal" class="btn btn-outline-primary col-lg-2 col-auto ml-3">選択して追加する</button>-->
+            <button @click="showInputModal" class="btn btn-outline-info col-lg-2 col-auto">入力して追加する</button>
+            <button @click="openSelectModal" class="btn btn-outline-primary col-lg-2 col-auto ml-3">選択して追加する</button>
             <button @click="enterInformation" class="btn btn-outline-success col-lg-2 col-3 ml-auto">決定</button>
         </div>
 
-        <div class="example-modal-window">
-            <!-- コンポーネント MyModal -->
-            <inputMyModal @close="closeInputModal" v-if="inputModal">
-                <!-- default スロットコンテンツ -->
-                <div class="h3 pb-0 px-lg-5" >食べ物とカロリーを入力してください</div>
-                <div class="form-group">
-                    <label for="food"></label>
-                    <input type="text" placeholder="食べ物" v-model="inputFood" id="food" class="form-control">
-                    <span class="text-danger">{{inputFoodResult}}</span>
-                    <label for="calorie"></label>
-                    <input type="number" placeholder="カロリー" v-model="inputCalorie" id="calorie" class="form-control ">
-                    <span class="text-danger">{{inputCalorieResult}}</span>
+        <!--入力モーダル-->
+        <b-modal ref="inputModal" title="食べ物とカロリーを入力してください" centered hide-footer>
+            <div class="form-group mt-auto">
+                <!--食べ物入力-->
+                <input type="text" placeholder="食べ物" v-model="inputFood" class="form-control" v-bind:class="{'is-invalid':!inputFoodError}">
+                <span class="invalid-feedback text-center">{{inputFoodResult}}</span>
+                <!--カロリー入力-->
+                <input type="number" placeholder="カロリー" v-model="inputCalorie" class="form-control mt-3" v-bind:class="{'is-invalid':!inputCalorieError}">
+                <span class="invalid-feedback text-center">{{inputCalorieResult}}</span>
+                <!--ボタン-->
+                <div class="mt-4 row float-right">
+                    <button @click="hideInputModal" class="btn btn-outline-secondary mr-3">キャンセル</button>
+                    <button @click="addInputData" class="btn btn-outline-success mr-3">追加</button>
                 </div>
-                <!-- /default -->
-                <!-- footer スロットコンテンツ -->
-                <template slot="footer">
-                    <button @click="closeInputModal" class="btn btn-outline-secondary">キャンセル</button>
-                    <button @click="addInputData" class="btn btn-outline-success">追加</button>
-                </template>
-                <!-- /footer -->
-            </inputMyModal>
-        </div>
+            </div>
+        </b-modal>
 
         <div class="example-modal-window">
             <!-- コンポーネント MyModal -->
@@ -132,19 +126,21 @@
 
     export default {
         name: "IntakeCalorieRegistration",
-        components: { inputMyModal,Datepicker  },
+        components: { inputMyModal,Datepicker},
         data(){
             return{
                 //モーダル
-                inputModal:false,
                 selectModal:false,
                 selectFoodModal:false,
-                //入力のデータ
+                //直接入力のデータ
                 inputFood:"",
                 inputCalorie:"",
                 //エラー名入れ
                 inputFoodResult:"",
                 inputCalorieResult:"",
+                //入力欄エラー判定
+                inputFoodError:true,
+                inputCalorieError:true,
                 //リスト用
                 addItem: [],
                 //通信用
@@ -174,20 +170,22 @@
                 const index = this.addItem.indexOf(item);
                 this.addItem.splice(index, 1)
             },
-            //直接入力のモーダルを閉じる
-            closeInputModal() {
-                this.inputModal = false
-                this.inputFoodResult=""
-                this.inputCalorieResult=""
-            },
             //直接入力のモーダルを開く
-            openInputModal(){
+            showInputModal() {
                 if(!this.selectedDate){
                     alert("日付呼び出しに失敗しました。もう一度やり直してください")
                 }
                 else {
-                    this.inputModal = true
+                    this.$refs['inputModal'].show()
                 }
+            },
+            //直接入力のモーダルを閉じる
+            hideInputModal() {
+                this.$refs['inputModal'].hide()
+                this.inputFoodResult=""
+                this.inputCalorieResult=""
+                this.inputFoodError = true
+                this.inputCalorieError = true
             },
             //選択入力のモーダルを開く
             openSelectModal(){
@@ -205,51 +203,48 @@
             closeFoodSelectModal() {
                 this.selectFoodModal = false
             },
-
             addInputData(){
-                //バリデーション
-                let inputFoodCheck = false
-                //空だった時
-                let inputCalorieCheck = false
+                //バリデーションチェック
+                //食べ物が空だった時
                 if (!this.inputFood){
                     this.inputFoodResult="食べ物を入力してください"
-                    inputFoodCheck = false
+                    this.inputFoodError = false
                 }
-                //文字数が多いとき
+                //食べ物の文字数が多いとき
                 else if (this.inputFood.length>75){
                     this.inputFoodResult="文字数が多すぎます"
-                    inputFoodCheck = false
+                    this.inputFoodError = false
                 }
-                //入力が正常
+                //食べ物入力が正常
                 else{
                     this.inputFoodResult=""
-                    inputFoodCheck = true
+                    this.inputFoodError = true
                 }
                 //カロリーが空だったとき
                 if (!this.inputCalorie){
                     this.inputCalorieResult="カロリーを入力してください"
-                    inputCalorieCheck = false
+                    this.inputCalorieError = false
                 }
-                //値が負数だったとき
+                //カロリーの値が負数だったとき
                 else if(Number(this.inputCalorie) < 0){
                     this.inputCalorieResult="プラスで入力してください"
-                    inputCalorieCheck = false
+                    this.inputCalorieError = false
                 }
-                //桁数が多い
+                //カロリー桁数が多い
                 else if (this.inputCalorie.length > 7){
                     this.inputCalorieResult="桁数が多すぎます"
-                    inputCalorieCheck = false
+                    this.inputCalorieError = false
                 }
-                //入力が正常
+                //カロリーの入力が正常
                 else {
                     this.inputCalorieResult=""
-                    inputCalorieCheck = true
+                    this.inputCalorieError = true
                 }
 
                 //日付加工
                 let time = this.selectedDate.getFullYear() + ("0" + (this.selectedDate.getMonth() + 1)).slice(-2) +("0" + this.selectedDate.getDate()).slice(-2)
                 //リストに追加
-                if (inputFoodCheck === true && inputCalorieCheck ===true){
+                if (this.inputFoodError === true && this.inputCalorieError === true){
                     //追加処理
                     this.addItem.push({
                         add_date:Number(time),
@@ -258,7 +253,7 @@
                     })
                     this.inputFood = ""
                     this.inputCalorie = ""
-                    this.inputModal = false
+                    this.hideInputModal()
                 }
             },
             //食べ物の取得
@@ -302,9 +297,12 @@
             enterInformation:async function(){
 
                 if (this.addItem.length===0){
-                    alert("一つ以上入力してください")
+                    alert("1つ以上リストに入力してください")
                     return
                 }
+
+                //ローディングアニメーションを起動
+                this.$store.commit("setLoading", true)
 
                 const URL = "https://fat3lak1i2.execute-api.us-east-1.amazonaws.com/acsys/users/schedule/food"
 
@@ -323,11 +321,13 @@
                     .then(response => response.json())
                     .then(data => {
                         let check = data["isSuccess"]
+                        //ローディングアニメーションを起動
+                        this.$store.commit("setLoading", true)
                         if (check === true){
                             console.log("摂取カロリー登録:ok")
                             this.$router.replace("/savecalorie")
                         }else {
-                            alert("エラーが発生しました。もう一度やり直してください")
+                            alert("登録に失敗しました。もう一度やり直してください")
                             console.log("摂取カロリー登録:ng")
                         }
                     })
@@ -335,7 +335,6 @@
                         console.log(error)
                         alert("エラーが発生しました。もう一度やり直してください")
                     })
-
             }
         },computed:{
             //カロリー合計計算
@@ -344,7 +343,8 @@
                     return Number(sum) + Number(item.food_calorie)
                 }, 0)
             }
-        },async created() {
+        },
+        async created() {
             //食べ物のリスト取得
             const URL = "https://fat3lak1i2.execute-api.us-east-1.amazonaws.com/acsys/calorie/food"
 
@@ -361,7 +361,7 @@
                 .catch(function (error) {
                     console.log(error)
                     console.log("食べ物分類取得:ng")
-                    alert("エラーが発生しました。もう一度やり直してください")
+                    alert("データ取得に失敗しました。もう一度やり直してください")
                 })
         }
     }
