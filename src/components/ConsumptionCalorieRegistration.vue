@@ -14,25 +14,25 @@
         <!--リスト-->
         <table class="table table-hover mt-1 table-sm col-auto">
             <thead>
-            <tr class="table-danger">
-                <th class="addDate">日付</th>
-                <th class="training">トレーニング</th>
-                <th class="calorie">カロリー</th>
-                <th class="delete">削除</th>
-            </tr>
+                <tr class="table-danger">
+                    <th class="addDate">日付</th>
+                    <th class="training">トレーニング</th>
+                    <th class="calorie">カロリー</th>
+                    <th class="delete">削除</th>
+                </tr>
             </thead>
             <tbody>
-            <tr v-for="item in addItem" v-bind:key="item.id">
-                <td>{{ item.add_date }}</td>
-                <td>{{ item.motion_name }}</td>
-                <td>{{ item.motion_calorie }}kcal</td>
-                <td class="deleteButton">
-                    <!-- 削除ボタン-->
-                    <button v-on:click="removeItem(item)" class="btn btn-outline-danger btn-sm">ー</button>
-                </td>
-            </tr>
-            <!--リストが空だった時-->
-            <td v-if="!addItem.length">リストは空です</td>
+                <tr v-for="item in addItem" v-bind:key="item.id">
+                    <td>{{ item.add_date }}</td>
+                    <td>{{ item.motion_name }}</td>
+                    <td>{{ item.motion_calorie }}kcal</td>
+                    <td class="deleteButton">
+                        <!-- 削除ボタン-->
+                        <button v-on:click="removeItem(item)" class="btn btn-outline-danger btn-sm">ー</button>
+                    </td>
+                </tr>
+                <!--リストが空だった時-->
+                <td v-if="!addItem.length">リストは空です</td>
             </tbody>
         </table>
         <!--合計-->
@@ -40,33 +40,27 @@
             <h4 class="col-xs-6 col-auto pt-1 pb-2">消費カロリー合計：{{sumCalories}}kcal</h4>
         </div>
         <div class="row">
-            <button @click="openInputModal" class="btn btn-outline-info col-lg-2 col-auto">入力して追加する</button>
-<!--            <button @click="openSelectModal" class="btn btn-outline-primary col-lg-2 col-auto ml-3">選択して追加する</button>-->
-            <button class="btn btn-outline-success col-lg-2 col-3 ml-auto" @click="enterInformation">決定</button>
+            <button @click="showInputModal" class="btn btn-outline-info col-md-3 col-auto mr-3 ml-3">入力して追加する</button>
+            <button @click="openSelectModal" class="btn btn-outline-primary col-md-3 col-auto">選択して追加する</button>
         </div>
+        <button @click="enterInformation" class="btn btn-outline-success col-md-3 mt-3 float-right" >決定</button>
 
-        <div class="example-modal-window">
-            <!-- コンポーネント MyModal -->
-            <inputMyModal @close="closeInputModal" v-if="inputModal">
-                <!-- default スロットコンテンツ -->
-                <div class="h3 pb-0">トレーニングとカロリーを入力してください</div>
-                <div class="form-group">
-                    <label for="training"></label>
-                    <input type="text" placeholder="トレーニング" v-model="inputTraining" id="training" class="form-control">
-                    <span class="text-danger">{{inputTrainingResult}}</span>
-                    <label for="calorie"></label>
-                    <input type="number" placeholder="カロリー" v-model="inputCalorie" id="calorie" class="form-control">
-                    <span class="text-danger">{{inputCalorieResult}}</span>
+        <!--入力モーダル-->
+        <b-modal ref="trainingInputModal" title="トレーニングとカロリーを入力してください" centered hide-footer>
+            <div class="form-group mt-auto">
+                <!--トレーニング入力-->
+                <input type="text" placeholder="トレーニング" v-model="inputTraining" class="form-control" v-bind:class="{'is-invalid':!inputTrainingError}">
+                <span class="invalid-feedback text-center">{{inputTrainingResult}}</span>
+                <!--カロリー入力-->
+                <input type="number" placeholder="カロリー" v-model="inputCalorie" class="form-control mt-3" v-bind:class="{'is-invalid':!inputCalorieError}">
+                <span class="invalid-feedback text-center">{{inputCalorieResult}}</span>
+                <!--ボタン-->
+                <div class="mt-4 row float-right">
+                    <button @click="hideInputModal" class="btn btn-outline-secondary mr-3">キャンセル</button>
+                    <button @click="addInputData" class="btn btn-outline-success mr-3">追加</button>
                 </div>
-                <!-- /default -->
-                <!-- footer スロットコンテンツ -->
-                <template slot="footer">
-                    <button @click="closeInputModal" class="btn btn-outline-secondary">キャンセル</button>
-                    <button @click="addInputData" class="btn btn-outline-success">追加</button>
-                </template>
-                <!-- /footer -->
-            </inputMyModal>
-        </div>
+            </div>
+        </b-modal>
 
         <div class="example-modal-window">
             <!-- コンポーネント MyModal -->
@@ -121,7 +115,6 @@
                 <!-- /footer -->
             </inputMyModal>
         </div>
-
     </div>
 </template>
 
@@ -136,15 +129,17 @@
         data(){
             return{
                 //モーダル
-                inputModal:false,
                 selectModal:false,
                 selectTrainingModal:false,
-                //入力のデータ
+                //直接入力のデータ
                 inputTraining:"",
                 inputCalorie:"",
-                //エラー名入れ
+                //直接エラー名入れ
                 inputTrainingResult:"",
                 inputCalorieResult:"",
+                //入力欄エラー判定
+                inputTrainingError:true,
+                inputCalorieError:true,
                 //リスト用
                 addItem:[],
                 trainingArray:[],
@@ -173,21 +168,24 @@
                 const index = this.addItem.indexOf(item);
                 this.addItem.splice(index, 1)
             },
-            //直接入力のモーダルを閉じる
-            closeInputModal() {
-                this.inputModal = false
-                this.inputTrainingResult = ""
-                this.inputCalorieResult = ""
-            },
             //直接入力のモーダルを開く
-            openInputModal(){
+            showInputModal() {
                 if(!this.selectedDate){
-                    alert("日付呼び出しに失敗しました。。もう一度やり直してください")
+                    alert("日付呼び出しに失敗しました。もう一度やり直してください")
                 }
                 else {
-                    this.inputModal = true
+                    this.$refs['trainingInputModal'].show()
                 }
             },
+            //直接入力のモーダルを閉じる
+            hideInputModal() {
+                this.$refs['trainingInputModal'].hide()
+                this.inputTrainingResult=""
+                this.inputCalorieResult=""
+                this.inputTrainingError = true
+                this.inputCalorieError = true
+            },
+
             //直接入力のモーダルを開く
             openSelectModal(){
                 this.selectModal = true
@@ -206,47 +204,45 @@
             },
             addInputData(){
                 //バリデーション
-                let inputTrainingCheck = false
-                let inputCalorieCheck = false
                 //トレーニングが空だった時
                 if (!this.inputTraining){
                     this.inputTrainingResult="トレーニングを入力してください"
-                    inputTrainingCheck = false
+                    this.inputTrainingError = false
                 }
                 //文字数が多い時
                 else if (this.inputTraining.length>75){
                     this.inputTrainingResult="文字数が多すぎます"
-                    inputTrainingCheck = false
+                    this.inputTrainingError = false
                 }
                 //正常
                 else {
                     this.inputTrainingResult=""
-                    inputTrainingCheck = true
+                    this.inputTrainingError = true
                 }
                 //カロリーが空だったとき
                 if (!this.inputCalorie){
                     this.inputCalorieResult="カロリーを入力してください"
-                    inputCalorieCheck = false
+                    this.inputCalorieError = false
                 }
                 //値が負数だったとき
                 else if(Number(this.inputCalorie) < 0){
                     this.inputCalorieResult="プラスで入力してください"
-                    inputCalorieCheck = false
+                    this.inputCalorieError = false
                 }
                 //桁数が多いとき
                 else if (this.inputCalorie.length > 7){
                     this.inputCalorieResult="桁数が多すぎます"
-                    inputCalorieCheck = false
+                    this.inputCalorieError = false
                 }
                 //値が正常
                 else {
                     this.inputCalorieResult=""
-                    inputCalorieCheck = true
+                    this.inputCalorieError = true
                 }
                 //日付加工
                 let time = this.selectedDate.getFullYear() + ("0" + (this.selectedDate.getMonth() + 1)).slice(-2) +("0" + this.selectedDate.getDate()).slice(-2)
                 //リストに登録
-                if (inputTrainingCheck === true && inputCalorieCheck ===true) {
+                if (this.inputTrainingError === true && this.inputCalorieError === true) {
                     //追加処理
                     this.addItem.push({
                         motion_name: this.inputTraining,
@@ -255,7 +251,7 @@
                     })
                     this.inputTraining = ""
                     this.inputCalorie = ""
-                    this.inputModal = false
+                    this.hideInputModal()
                 }
             },
             //データ選択時リスト追加
@@ -276,6 +272,9 @@
                     return
                 }
 
+                //ローディングアニメーションを起動
+                this.$store.commit("setLoading", true)
+
                 const URL = "https://fat3lak1i2.execute-api.us-east-1.amazonaws.com/acsys/users/schedule/motion"
 
                 this.trainingArray ={
@@ -294,6 +293,8 @@
                     .then(data => {
                         console.log(data)
                         let check = data["isSuccess"]
+                        //ローディングアニメーションを終了
+                        this.$store.commit("setLoading", false)
                         if (check === true){
                             console.log("消費カロリー登録:ok")
                             this.$router.replace("/savecalorie")
@@ -365,7 +366,3 @@
         }
     }
 </script>
-
-<style scoped>
-
-</style>
