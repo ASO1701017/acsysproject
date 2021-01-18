@@ -5,11 +5,11 @@
         </div>
         <!--日付選択-->
         <datepicker
-                v-model=selectedDate
-                :format="DatePickerFormat"
-                :language="ja"
-                :highlighted="highlighted"
-                :disabled-dates="disabledDates">
+            v-model=selectedDate
+            :format="DatePickerFormat"
+            :language="ja"
+            :highlighted="highlighted"
+            :disabled-dates="disabledDates">
         </datepicker>
         <!--リスト-->
         <table class="table table-hover mt-1 table-sm col-auto">
