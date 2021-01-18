@@ -40,10 +40,10 @@
             <h4 class="col-xs-6 col-auto pt-1 pb-2">摂取カロリー合計：{{sumCalories}}kcal</h4>
         </div>
         <div class="row">
-            <button @click="showInputModal" class="btn btn-outline-info col-lg-2 col-auto">入力して追加する</button>
-            <button @click="openSelectModal" class="btn btn-outline-primary col-lg-2 col-auto ml-3">選択して追加する</button>
-            <button @click="enterInformation" class="btn btn-outline-success col-lg-2 col-3 ml-auto">決定</button>
+            <button @click="showInputModal" class="btn btn-outline-info col-md-3 col-auto mr-3 ml-3">入力して追加する</button>
+            <button @click="openSelectModal" class="btn btn-outline-primary col-md-3 col-auto">選択して追加する</button>
         </div>
+        <button @click="enterInformation" class="btn btn-outline-success col-md-3 mt-3 float-right">決定</button>
 
         <!--入力モーダル-->
         <b-modal ref="inputModal" title="食べ物とカロリーを入力してください" centered hide-footer>
