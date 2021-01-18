@@ -64,28 +64,37 @@
 
         <!--選択第一モーダル-->
         <b-modal ref="selectModal" title="分類を選択してください" centered hide-footer scrollable >
-            <table class="table table-hover table-sm ">
-                <thead>
-                    <tr class="table-info">
-                        <th class="genre">分類</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="item in genreBox" v-bind:key="item.id">
-                        <td @click="getFood(item)">{{ item.genre_name }}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <button @click="closeSelectModal" class="btn btn-outline-secondary float-right mr-3">キャンセル</button>
+            <div v-if="!selectSpiner">
+                <button class="btn btn-primary" type="button" disabled>
+                    <span class="spinner-border mr-1" role="status" aria-hidden="true"></span> Loading...</button>
+            </div>
+            <div v-if="selectSpiner">
+                <div v-if="errorMesage">
+                    {{errorMesage}}
+                </div>
+                <table class="table table-hover table-sm ">
+                    <thead>
+                        <tr class="table-info">
+                            <th class="genre">分類</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in genreBox" v-bind:key="item.id">
+                            <td @click="getFood(item)">{{ item.genre_name }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button @click="closeSelectModal" class="btn btn-outline-secondary float-right ">キャンセル</button>
         </b-modal>
 
         <!--選択第二モーダル-->
         <b-modal ref="selectFoodModal" title="食べ物を選択してください" centered hide-footer scrollable>
-            <div v-if="!spiner">
+            <div v-if="!foodSpiner">
                 <button class="btn btn-primary" type="button" disabled>
-                    <span class="spinner-border" role="status" aria-hidden="true"></span> Loading...</button>
+                    <span class="spinner-border mr-1" role="status" aria-hidden="true"></span> Loading...</button>
             </div>
-            <div v-if="spiner">
+            <div v-if="foodSpiner">
                 <table class="table table-hover table-sm ">
                     <thead>
                     <tr class="table-info">
@@ -101,7 +110,8 @@
                     </tbody>
                 </table>
             </div>
-            <button @click="closeFoodSelectModal" class="btn btn-outline-secondary float-right mr-3">キャンセル</button>
+            <button @click="closeFoodSelectModal" class="btn btn-outline-secondary float-right ">キャンセル</button>
+            <button @click="backFoodSelectModal" class="btn btn-outline-primary float-right mr-2">戻る</button>
         </b-modal>
     </div>
 </template>
@@ -146,7 +156,9 @@
                 genreBox:[],
                 foodBox:[],
                 //スピナー
-                spiner:false,
+                foodSpiner:false,
+                selectSpiner:false,
+                errorMesage:"",
             }
         },
         methods:{
@@ -187,6 +199,11 @@
             //選択入力のモーダルを閉じる
             closeFoodSelectModal() {
                 this.$refs['selectFoodModal'].hide()
+            },
+            //選択入力のモーダルを閉じる
+            backFoodSelectModal() {
+                this.$refs['selectFoodModal'].hide()
+                this.$refs['selectModal'].show()
             },
             addInputData(){
                 //バリデーションチェック
@@ -245,7 +262,7 @@
             getFood:async function(item){
                 this.closeSelectModal()
                 this.openFoodSelectModal()
-                this.spiner = false
+                this.foodSpiner = false
                 const URL = "https://fat3lak1i2.execute-api.us-east-1.amazonaws.com/acsys/calorie/food"
 
                 let getFoodItem ={
@@ -268,7 +285,7 @@
                         console.log("食べ物取得:ng")
                         alert("エラーが発生しました。もう一度やり直してください")
                     })
-                this.spiner = true
+                this.foodSpiner = true
             },
             //リストに追加
             addSelectData(food,calorie){
@@ -332,7 +349,8 @@
             }
         },
         async created() {
-            //食べ物のリスト取得
+            //食べ物の分類リスト取得
+            this.selectSpiner = false
             const URL = "https://fat3lak1i2.execute-api.us-east-1.amazonaws.com/acsys/calorie/food"
 
             await fetch(URL,{
@@ -348,8 +366,9 @@
                 .catch(function (error) {
                     console.log(error)
                     console.log("食べ物分類取得:ng")
-                    alert("データ取得に失敗しました。もう一度やり直してください")
+                    this.errorMesage = "分類の取得に失敗しました。もう一度ページを読み込みなおしてください。"
                 })
+            this.selectSpiner = true
         }
     }
 </script>
