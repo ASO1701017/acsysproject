@@ -325,8 +325,8 @@
                     .then(response => response.json())
                     .then(data => {
                         let check = data["isSuccess"]
-                        //ローディングアニメーションを起動
-                        this.$store.commit("setLoading", true)
+                        //ローディングアニメーションを終了
+                        this.$store.commit("setLoading", false)
                         if (check === true){
                             console.log("摂取カロリー登録:ok")
                             this.$router.replace("/savecalorie")
