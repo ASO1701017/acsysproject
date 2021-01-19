@@ -72,18 +72,20 @@
                 <div v-if="errorMesage">
                     {{errorMesage}}
                 </div>
-                <table class="table table-hover table-sm ">
-                    <thead>
+                <div v-if="!errorMesage">
+                    <table class="table table-hover table-sm ">
+                        <thead>
                         <tr class="table-info">
                             <th class="genre">分類</th>
                         </tr>
-                    </thead>
-                    <tbody>
+                        </thead>
+                        <tbody>
                         <tr v-for="item in genreBox" v-bind:key="item.id">
                             <td @click="getFood(item)">{{ item.genre_name }}</td>
                         </tr>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <button @click="closeSelectModal" class="btn btn-outline-secondary float-right ">キャンセル</button>
         </b-modal>
@@ -184,23 +186,23 @@
                 this.inputFoodError = true
                 this.inputCalorieError = true
             },
-            //選択入力のモーダルを開く
+            //分類選択入力のモーダルを開く
             openSelectModal(){
                 this.$refs['selectModal'].show()
             },
-            //選択入力のモーダルを閉じる
+            //分類選択入力のモーダルを閉じる
             closeSelectModal() {
                 this.$refs['selectModal'].hide()
             },
-            //選択入力のモーダルを開く
+            //食べ物選択入力のモーダルを開く
             openFoodSelectModal(){
                 this.$refs['selectFoodModal'].show()
             },
-            //選択入力のモーダルを閉じる
+            //食べ物選択入力のモーダルを閉じる
             closeFoodSelectModal() {
                 this.$refs['selectFoodModal'].hide()
             },
-            //選択入力のモーダルを閉じる
+            //選択へ戻るモーダル
             backFoodSelectModal() {
                 this.$refs['selectFoodModal'].hide()
                 this.$refs['selectModal'].show()
