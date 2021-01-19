@@ -16,7 +16,7 @@
             <thead>
                 <tr class="table-danger">
                     <th class="addDate">日付</th>
-                    <th class="training">トレーニング</th>
+                    <th class="training">運動</th>
                     <th class="calorie">カロリー</th>
                     <th class="delete">削除</th>
                 </tr>
@@ -43,13 +43,13 @@
             <button @click="showInputModal" class="btn btn-outline-info col-md-3 col-auto mr-3 ml-3">入力して追加する</button>
             <button @click="openSelectModal" class="btn btn-outline-primary col-md-3 col-auto">選択して追加する</button>
         </div>
-        <button @click="enterInformation" class="btn btn-outline-success col-md-3 mt-3 float-right" >決定</button>
+        <button @click="enterInformation" class="btn btn-outline-success col-md-3 mt-3 float-right">決定</button>
 
         <!--入力モーダル-->
-        <b-modal ref="trainingInputModal" title="トレーニングとカロリーを入力してください" centered hide-footer>
+        <b-modal ref="trainingInputModal" title="運動とカロリーを入力してください" centered hide-footer>
             <div class="form-group mt-auto">
                 <!--トレーニング入力-->
-                <input type="text" placeholder="トレーニング" v-model="inputTraining" class="form-control" v-bind:class="{'is-invalid':!inputTrainingError}">
+                <input type="text" placeholder="運動" v-model="inputTraining" class="form-control" v-bind:class="{'is-invalid':!inputTrainingError}">
                 <span class="invalid-feedback text-center">{{inputTrainingResult}}</span>
                 <!--カロリー入力-->
                 <input type="number" placeholder="カロリー" v-model="inputCalorie" class="form-control mt-3" v-bind:class="{'is-invalid':!inputCalorieError}">
@@ -62,84 +62,107 @@
             </div>
         </b-modal>
 
-        <div class="example-modal-window">
-            <!-- コンポーネント MyModal -->
-            <inputMyModal @close="closeSelectModal" v-if="selectModal">
-                <!-- default スロットコンテンツ -->
-                <h4 class="px-lg-5 mx-5">分類を選択してください</h4>
-                <table class="table table-hover table-sm ">
-                    <thead>
-                    <tr class="table-info">
-                        <th class="genre">分類</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="item in genreBox" v-bind:key="item.id">
-                        <td @click="getTraining(item)">{{ item.genre_name }}</td>
-                    </tr>
-                    </tbody>
-                </table>
-                <!-- /default -->
-                <!-- footer スロットコンテンツ -->
-                <template slot="footer">
-                    <button @click="closeSelectModal" class="btn btn-outline-secondary">キャンセル</button>
-                </template>
-                <!-- /footer -->
-            </inputMyModal>
-        </div>
+        <!--選択第一モーダル-->
+        <b-modal ref="selectTrainingModal" title="分類を選択してください" centered hide-footer scrollable >
+            <div v-if="!selectSpiner">
+                <button class="btn btn-primary" type="button" disabled>
+                    <span class="spinner-border mr-1" role="status" aria-hidden="true"></span> Loading...</button>
+            </div>
+            <div v-if="selectSpiner">
+                <div v-if="errorMesage">
+                    {{errorMesage}}
+                </div>
+                <div v-if="!errorMesage">
+                    <table class="table table-hover table-sm ">
+                        <thead>
+                        <tr class="table-info">
+                            <th class="genre">分類</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="item in genreBox" v-bind:key="item.id">
+                            <td @click="getTraining(item)">{{ item.genre_name }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <button @click="closeSelectModal" class="btn btn-outline-secondary float-right ">キャンセル</button>
+        </b-modal>
 
-        <div class="example-modal-window">
-            <!-- コンポーネント MyModal -->
-            <inputMyModal @close="closeTrainingSelectModal" v-if="selectTrainingModal">
-                <!-- default スロットコンテンツ -->
-                <h4 class="px-lg-5 mx-5">トレーニングを選択してください</h4>
-                <table class="table table-hover table-sm ">
+        <!--選択第二モーダル-->
+        <b-modal ref="selectActionModal" title="運動を選択してください" centered hide-footer scrollable size="lg">
+            <div v-if="!trainingSpiner">
+                <button class="btn btn-primary" type="button" disabled>
+                    <span class="spinner-border mr-1" role="status" aria-hidden="true"></span> Loading...</button>
+            </div>
+            <div v-if="trainingSpiner">
+                <table class="table table-hover table-sm">
                     <thead>
                     <tr class="table-info">
-                        <th class="food">トレーニング</th>
-                        <th class="calorie">カロリー</th>
+                        <th class="food" scope="col">トレーニング</th>
+                        <th class="calorie" scope="col">メッツ</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr v-for="item in trainingBox" v-bind:key="item.id">
-                        <td @click="addSelectData(item.motion_name,item.motion_carolies)">{{ item.motion_name }}</td>
-                        <td @click="addSelectData(item.motion_name,item.motion_carolies)">{{item.motion_carolies}}</td>
+                        <td @click="addSelectData(item.motion_name,item.motion_calorie)">{{ item.motion_name }}</td>
+                        <td @click="addSelectData(item.motion_name,item.motion_calorie)">{{item.motion_calorie}}</td>
                     </tr>
                     </tbody>
                 </table>
-                <!-- /default -->
-                <!-- footer スロットコンテンツ -->
-                <template slot="footer">
-                    <button @click="closeTrainingSelectModal" class="btn btn-outline-secondary">キャンセル</button>
-                </template>
-                <!-- /footer -->
-            </inputMyModal>
-        </div>
+            </div>
+            <button @click="closeTrainingSelectModal" class="btn btn-outline-secondary float-right ">キャンセル</button>
+            <button @click="backTrainingSelectModal" class="btn btn-outline-primary float-right mr-2">戻る</button>
+        </b-modal>
+
+        <!--選択第三モーダル-->
+        <b-modal ref="inputActionModal" title="時間(分)を入力してください" centered hide-footer>
+            <div class="form-group mt-auto">
+                <!--トレーニング入力-->
+                <input type="text" placeholder="運動" readonly v-model="selectTraining" class="form-control" >
+                <!--カロリー入力-->
+                <input type="number" placeholder="カロリー" readonly  v-model="selectCalorie" class="form-control mt-3" >
+                <!--時間入力-->
+                <input type="number" placeholder="時間(分)"  v-model="selectMinutes" class="form-control mt-3" v-bind:class="{'is-invalid':!selectMinutesErrer}">
+                <span class="invalid-feedback text-center">{{selectMinutesResult}}</span>
+                <!--ボタン-->
+                <div class="mt-4 row float-right">
+                    <button @click="inputTrainingHideSelectModal" class="btn btn-outline-secondary mr-3">キャンセル</button>
+                    <button @click="backTrainingOpenSelectModal" class="btn btn-outline-primary float-right mr-3">戻る</button>
+                    <button @click="addInputSelectData" class="btn btn-outline-success mr-3">追加</button>
+                </div>
+            </div>
+        </b-modal>
+
     </div>
 </template>
 
 <script>
-    import inputMyModal from "./MyModal";
     import Datepicker from "vuejs-datepicker";
     import {ja} from 'vuejs-datepicker/dist/locale'
 
     export default {
         name: "ConsumptionCalorieRegistration",
-        components: { inputMyModal,Datepicker },
+        components: { Datepicker },
         data(){
             return{
-                //モーダル
-                selectModal:false,
-                selectTrainingModal:false,
                 //直接入力のデータ
                 inputTraining:"",
                 inputCalorie:"",
                 //直接エラー名入れ
                 inputTrainingResult:"",
                 inputCalorieResult:"",
-                //入力欄エラー判定
+                //直接入力欄エラー判定
                 inputTrainingError:true,
                 inputCalorieError:true,
+                //選択入力計算用変数
+                selectTraining:"",
+                selectCalorie:"",
+                selectMinutes:"",
+                //選択入力エラー
+                selectMinutesResult:"",
+                selectMinutesErrer:true,
                 //リスト用
                 addItem:[],
                 trainingArray:[],
@@ -160,6 +183,10 @@
                 //分類
                 genreBox:[],
                 trainingBox:[],
+                //スピナー
+                selectSpiner:false,
+                trainingSpiner:false,
+                errorMesage:"",
             }
         },
         methods:{
@@ -185,22 +212,47 @@
                 this.inputTrainingError = true
                 this.inputCalorieError = true
             },
-
-            //直接入力のモーダルを開く
+            //分類選択入力のモーダルを開く
             openSelectModal(){
-                this.selectModal = true
+                this.$refs['selectTrainingModal'].show()
             },
-            //直接入力のモーダルを閉じる
+            //分類選択入力のモーダルを閉じる
             closeSelectModal() {
-                this.selectModal = false
+                this.$refs['selectTrainingModal'].hide()
             },
-            //直接入力のモーダルを開く
+            //運動選択入力のモーダルを開く
             openTrainingSelectModal(){
-                this.selectTrainingModal = true
+                this.$refs['selectActionModal'].show()
             },
-            //直接入力のモーダルを閉じる
+            //運動選択のモーダルを閉じる
             closeTrainingSelectModal() {
-                this.selectTrainingModal = false
+                this.$refs['selectActionModal'].hide()
+            },
+            //分類選択に戻る
+            backTrainingSelectModal(){
+                this.$refs['selectActionModal'].hide()
+                this.$refs['selectTrainingModal'].show()
+            },
+            //選択入力モーダル
+            inputTrainingOpenSelectModal(){
+                this.$refs['inputActionModal'].show()
+            },
+            inputTrainingHideSelectModal() {
+                this.$refs['inputActionModal'].hide()
+                this.selectTraining = ""
+                this.selectCalorie=""
+                this.selectMinutes=""
+                this.selectMinutesResult = ""
+                this.selectMinutesErrer = true
+            },
+            backTrainingOpenSelectModal(){
+                this.$refs['inputActionModal'].hide()
+                this.selectTraining = ""
+                this.selectCalorie=""
+                this.selectMinutes=""
+                this.selectMinutesResult = ""
+                this.selectMinutesErrer = true
+                this.$refs['selectActionModal'].show()
             },
             addInputData(){
                 //バリデーション
@@ -254,15 +306,51 @@
                     this.hideInputModal()
                 }
             },
-            //データ選択時リスト追加
+            //データ選択時変数に追加しモーダルを開く
             addSelectData(training,calorie){
-                let time = this.selectedDate.getFullYear() + ("0" + (this.selectedDate.getMonth() + 1)).slice(-2) +("0" + this.selectedDate.getDate()).slice(-2)
-                this.addItem.push({
-                    add_date:Number(time),
-                    motion_calorie: calorie,
-                    motion_name: training,
-                })
                 this.closeTrainingSelectModal()
+                this.selectTraining = training
+                this.selectCalorie = Number(calorie)
+                this.inputTrainingOpenSelectModal()
+            },
+            //選択データ入力
+            addInputSelectData(){
+                //バリデーション
+                //時間が空だったとき
+                if (!this.selectMinutes){
+                    this.selectMinutesResult="時間を入力してください"
+                    this.selectMinutesErrer = false
+                }
+                //値が負数だったとき
+                else if(Number(this.selectMinutes) < 0){
+                    this.selectMinutesResult="プラスで入力してください"
+                    this.selectMinutesErrer = false
+                }
+                //桁数が多いとき
+                else if (this.selectMinutes.length > 5){
+                    this.selectMinutesResult="桁数が多すぎます"
+                    this.selectMinutesErrer = false
+                }
+                //値が正常
+                else {
+                    this.selectMinutesResult=""
+                    this.selectMinutesErrer = true
+                }
+                if (this.selectMinutesErrer === true){
+                    // 日付を求める
+                    let time = this.selectedDate.getFullYear() + ("0" + (this.selectedDate.getMonth() + 1)).slice(-2) +("0" + this.selectedDate.getDate()).slice(-2)
+                    // 計算
+                    let min = Math.round(this.selectMinutes/60*100)/100
+                    let calorieResult = Math.round(this.selectCalorie * this.$store.state.accountWeight  * min * 1.05)
+                    //リストに登録
+                    this.addItem.push({
+                        add_date:Number(time),
+                        motion_calorie: calorieResult,
+                        motion_name: this.selectTraining,
+                    })
+                    // モーダルを閉じる
+                    this.inputTrainingHideSelectModal()
+                }
             },
             //データ送信
             enterInformation:async function(){
@@ -311,8 +399,9 @@
             },
             //トレーニングの中身取得
             getTraining:async function(item){
-                this.selectModal = false
+                this.closeSelectModal()
                 this.openTrainingSelectModal()
+                this.trainingSpiner = false
                 const URL = "https://fat3lak1i2.execute-api.us-east-1.amazonaws.com/acsys/calorie/motion"
                 let getTrainingItem ={
                     'genre_ID':item.genre_ID
@@ -334,6 +423,7 @@
                         console.log("トレーニング取得:ng")
                         alert("エラーが発生しました。もう一度やり直してください")
                     })
+                this.trainingSpiner = true
             },
         },
         computed:{
@@ -346,6 +436,7 @@
         },
         async created() {
             //トレーニング分類取得
+            this.selectSpiner = false
             const URL = "https://fat3lak1i2.execute-api.us-east-1.amazonaws.com/acsys/calorie/motion"
 
             await fetch(URL,{
@@ -361,8 +452,9 @@
                 .catch(function (error) {
                     console.log(error)
                     console.log("トレーニング分類取得:ng")
-                    alert("エラーが発生しました。もう一度やり直してください")
+                    this.errorMesage = "分類の取得に失敗しました。もう一度ページを読み込みなおしてください。"
                 })
+            this.selectSpiner = true
         }
     }
 </script>
