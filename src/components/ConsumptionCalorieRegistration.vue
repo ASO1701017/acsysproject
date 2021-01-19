@@ -40,8 +40,9 @@
             <h4 class="col-xs-6 col-auto pt-1 pb-2">消費カロリー合計：{{sumCalories}}kcal</h4>
         </div>
         <div class="row">
-            <button @click="showInputModal" class="btn btn-outline-info col-md-3 col-auto mr-3 ml-3">入力して追加する</button>
-            <button @click="openSelectModal" class="btn btn-outline-primary col-md-3 col-auto">選択して追加する</button>
+            <button @click="showInputModal" class="btn btn-outline-info col-md-3 mx-3 mb-3">入力して追加する</button>
+            <button @click="openSelectModal" class="btn btn-outline-primary col-md-3 mx-3 mb-3">選択して追加する</button>
+            <button @click="addDayCalorie" class="btn btn-outline-danger col-md-3 mx-3 mb-3">一日の消費カロリー追加</button>
         </div>
         <button @click="enterInformation" class="btn btn-outline-success col-md-3 mt-3 float-right">決定</button>
 
@@ -352,6 +353,73 @@
                     this.inputTrainingHideSelectModal()
                 }
             },
+            //一日の消費カロリー追加
+            addDayCalorie(){
+                //すでに入力されているかチェック
+                let check = this.selectedDate.getFullYear() + ("0" + (this.selectedDate.getMonth() + 1)).slice(-2) +("0" + this.selectedDate.getDate()).slice(-2)
+                for (let item of this.addItem){
+                    if (Number(item.add_date) === Number(check)){
+                        if (item.motion_name === "一日の消費カロリー"){
+                            alert("同じ日付に2回目の登録は出来ません")
+                            return
+                        }
+                    }
+                }
+                //初期値の登録
+                let genderFirstNum = 0
+                let genderSecondNum = 0
+                let genderThirdNum = 0
+                let genderForceNum = 0
+                if (this.$store.state.accountGender === "男性"){
+                    genderFirstNum = 13.397
+                    genderSecondNum =4.799
+                    genderThirdNum = 5.677
+                    genderForceNum = 88.362
+                }else {
+                    genderFirstNum = 9.247
+                    genderSecondNum = 3.098
+                    genderThirdNum = 4.33
+                    genderForceNum = 447.593
+                }
+                // 年齢を求める
+                let age = this.$store.state.accountBirthDay.toString()
+                let ageYear = Number(age.slice(0, 4))
+                let ageMonth = Number(age.slice(4, 6))
+                let ageDay = Number(age.slice(6, 8))
+                let today = new Date()
+                let todayYear = today.getFullYear()
+                let todayMonth = today.getMonth()+1
+                let todayDay = today.getDate()
+                age = todayYear - ageYear
+                if (ageMonth > todayMonth){
+                    --age
+                }else if (ageMonth === todayMonth){
+                    if (ageDay >= todayDay){
+                        --age
+                    }
+                }
+                //身体レベル
+                let boddyLevel = 0
+                if (this.$store.state.accountActiveLevel === "1"){
+                    boddyLevel = 1.2
+                }else if (this.$store.state.accountActiveLevel === "2"){
+                    boddyLevel = 1.55
+                }else {
+                    boddyLevel = 1.9
+                }
+                //基礎代謝を求める
+                let sumCalorie = genderFirstNum * this.$store.state.accountWeight + genderSecondNum * this.$store.state.accountHeight - genderThirdNum * age + genderForceNum
+                sumCalorie = Math.round(sumCalorie * 1000) /1000
+                sumCalorie = Math.round(sumCalorie * boddyLevel)
+                // 日付を求める
+                let time = this.selectedDate.getFullYear() + ("0" + (this.selectedDate.getMonth() + 1)).slice(-2) +("0" + this.selectedDate.getDate()).slice(-2)
+                //リストに登録
+                this.addItem.push({
+                    add_date:Number(time),
+                    motion_calorie: sumCalorie,
+                    motion_name: "一日の消費カロリー",
+                })
+            },
             //データ送信
             enterInformation:async function(){
 
@@ -379,7 +447,6 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data)
                         let check = data["isSuccess"]
                         //ローディングアニメーションを終了
                         this.$store.commit("setLoading", false)
