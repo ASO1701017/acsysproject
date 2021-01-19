@@ -27,7 +27,10 @@
                     <td v-if="!intaked.length">何も登録されていません</td>
                     </tbody>
                 </table>
-                <h4 class="col-xs-6 col-auto pb-2">摂取カロリー合計：{{sumFoodCalories}}kcal</h4>
+                <div class="row pb-3">
+                    <h4 class="col-sm-7 col-auto mt-1">摂取カロリー合計：{{sumFoodCalories}}kcal</h4>
+                    <a @click="intakeDate()" class="btn col-sm-5  btn-outline-info float-left" role="button">摂取カロリー登録</a>
+                </div>
                 <table class="table table-sm col-auto">
                     <thead>
                     <tr class="table-danger">
@@ -43,7 +46,10 @@
                     <td v-if="!burned.length">何も登録されていません</td>
                     </tbody>
                 </table>
-                <h4 class="col-xs-6 col-auto pt-1 pb-2">消費カロリー合計：{{sumTrainingCalories}}kcal</h4>
+                <div class="row pb-3">
+                    <h4 class="col-sm-7 col-auto mt-1">消費カロリー合計：{{sumTrainingCalories}}kcal</h4>
+                    <a @click="consumptionDate()" class="btn col-sm-5  btn-outline-danger float-left" role="button">消費カロリー登録</a>
+                </div>
             </div>
         </div>
     </div>
@@ -65,7 +71,19 @@
                 intaked:[],
                 spiner:true
             }
-        }, async created() {
+        },
+        methods:{
+          //摂取日付指定呼び出し
+            intakeDate(){
+                this.$store.commit("setDate", this.selectedDate)
+                this.$router.replace("/intakecalorie")
+            },
+            consumptionDate(){
+                this.$store.commit("setDate", this.selectedDate)
+                this.$router.replace("/consumptioncalorie")
+            },
+        },
+        async created() {
             //ローディングアニメーションを起動
             this.$store.commit("setLoading", true)
             const selectYear = this.selectedDate.getFullYear()
@@ -122,7 +140,6 @@
                     .then(response => response.json())
                     .then(data => {
                         console.log("カレンダー情報取得:ok")
-                        console.log(data)
                         this.intaked.splice(0,this.intaked.length)
                         this.burned.splice(0,this.burned.length)
                         this.intaked = data["intaked"]

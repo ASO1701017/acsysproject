@@ -506,6 +506,11 @@
             this.selectSpiner = false
             const URL = "https://fat3lak1i2.execute-api.us-east-1.amazonaws.com/acsys/calorie/motion"
 
+            if (this.$store.state.date){
+                this.selectedDate = this.$store.state.date
+                this.$store.commit("setDate", null)
+            }
+
             await fetch(URL,{
                 mode:'cors',
                 method:'Get',

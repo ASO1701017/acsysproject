@@ -22,7 +22,9 @@ export default new Vuex.Store({
         consumptionCalorie:'',
         calorie:'',
         //ローディングアニメーション
-        loading: false
+        loading: false,
+        //日付指定登録
+        date:'',
     },
 
     mutations:{
@@ -62,6 +64,10 @@ export default new Vuex.Store({
         //ローディングアニメーション
         setLoading(state, payload) {
             state.loading = payload
+        },
+        //日付指定
+        setDate(state,dateInput){
+            state.date = dateInput
         },
     },
 
