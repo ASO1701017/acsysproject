@@ -1,48 +1,50 @@
 <template>
     <div id='app' class="container">
-        <v-date-picker
-                :mode="mode"
-                v-model="selectedDate"
-                is-inline
-                is-expanded
-        ></v-date-picker>
-        <div v-if="!spiner">
-            <button class="btn btn-primary" type="button" disabled>
-                <span class="spinner-border" role="status" aria-hidden="true"></span> Loading...</button>
-        </div>
-        <div v-if="spiner">
-            <table class="table table-sm col-auto mt-3">
-                <thead>
-                <tr class="table-info">
-                    <th class="food">食品</th>
-                    <th class="calorie">カロリー</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="item in intaked" v-bind:key="item.id">
-                    <td>{{ item.food_name }}</td>
-                    <td>{{ item.food_calorie }}kcal</td>
-                </tr>
-                <td v-if="!intaked.length">何も登録されていません</td>
-                </tbody>
-            </table>
-            <h4 class="col-xs-6 col-auto pb-2">摂取カロリー合計：{{sumFoodCalories}}kcal</h4>
-            <table class="table table-sm col-auto">
-                <thead>
-                <tr class="table-danger">
-                    <th class="training">トレーニング</th>
-                    <th class="calorie">カロリー</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="item in burned" v-bind:key="item.id">
-                    <td>{{ item.motion_name }}</td>
-                    <td>{{ item.motion_calorie }}kcal</td>
-                </tr>
-                <td v-if="!burned.length">何も登録されていません</td>
-                </tbody>
-            </table>
-            <h4 class="col-xs-6 col-auto pt-1 pb-2">消費カロリー合計：{{sumTrainingCalories}}kcal</h4>
+        <div v-if="!this.$store.state.loading">
+            <v-date-picker
+                    :mode="mode"
+                    v-model="selectedDate"
+                    is-inline
+                    is-expanded
+            ></v-date-picker>
+            <div v-if="!spiner">
+                <button class="btn btn-primary mt-3" type="button" disabled>
+                    <span class="spinner-border" role="status" aria-hidden="true"></span><span class="ml-2 h4">Loading...</span></button>
+            </div>
+            <div v-if="spiner">
+                <table class="table table-sm col-auto mt-3">
+                    <thead>
+                    <tr class="table-info">
+                        <th class="food">食品</th>
+                        <th class="calorie">カロリー</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="item in intaked" v-bind:key="item.id">
+                        <td>{{ item.food_name }}</td>
+                        <td>{{ item.food_calorie }}kcal</td>
+                    </tr>
+                    <td v-if="!intaked.length">何も登録されていません</td>
+                    </tbody>
+                </table>
+                <h4 class="col-xs-6 col-auto pb-2">摂取カロリー合計：{{sumFoodCalories}}kcal</h4>
+                <table class="table table-sm col-auto">
+                    <thead>
+                    <tr class="table-danger">
+                        <th class="training">トレーニング</th>
+                        <th class="calorie">カロリー</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="item in burned" v-bind:key="item.id">
+                        <td>{{ item.motion_name }}</td>
+                        <td>{{ item.motion_calorie }}kcal</td>
+                    </tr>
+                    <td v-if="!burned.length">何も登録されていません</td>
+                    </tbody>
+                </table>
+                <h4 class="col-xs-6 col-auto pt-1 pb-2">消費カロリー合計：{{sumTrainingCalories}}kcal</h4>
+            </div>
         </div>
     </div>
 </template>
@@ -61,9 +63,11 @@
                 dataGet:"",
                 burned:[],
                 intaked:[],
-                spiner:false
+                spiner:true
             }
         }, async created() {
+            //ローディングアニメーションを起動
+            this.$store.commit("setLoading", true)
             const selectYear = this.selectedDate.getFullYear()
             const selectMonth = ("0" + (this.selectedDate.getMonth() + 1)).slice(-2)
             const selectDay = ("0" + this.selectedDate.getDate()).slice(-2)
@@ -93,7 +97,8 @@
                     console.log(error)
                     alert("エラーが発生しました。もう一度やり直してください")
                 })
-            this.spiner = true
+            //ローディングアニメーションを終了
+            this.$store.commit("setLoading", false)
         }, watch: {
             selectedDate: async function () {
                 this.spiner = false
