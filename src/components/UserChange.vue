@@ -117,7 +117,6 @@
                     account_purpose:array.account_purpose,
                     account_token:this.$store.state.accountToken,
                 }
-                console.log(this.post_data)
                 const json_data = JSON.stringify(this.post_data)
                 await fetch(URL, {
                     mode: 'cors',
