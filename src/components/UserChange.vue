@@ -56,11 +56,11 @@
             <div class="row mt-4">
                 <label id="PurposeTitle" class="col-md-3  col-form-label text-right col-3">目的</label>
                 <div class="form-check mt-2 ml-3 col-md-2 col-auto">
-                    <input class="form-check-input" type="radio" name="Purpose" id="down" value="0" v-model="form.account_purpose" checked="checked">
+                    <input class="form-check-input" type="radio" name="Purpose" id="down" value="減量" v-model="form.account_purpose">
                     <label class="form-check-label" for="down">減量</label>
                 </div>
                 <div class="form-check mt-2 col-md-2 col-auto">
-                    <input class="form-check-input" type="radio" name="Purpose" id="up" value="1" v-model="form.account_purpose">
+                    <input class="form-check-input" type="radio" name="Purpose" id="up" value="増量" v-model="form.account_purpose">
                     <label class="form-check-label" for="up">増量</label>
                 </div>
             </div>
@@ -82,14 +82,14 @@
                 account_height: '',
                 account_weight: '',
                 account_level: '',
-                account_purpose: '',
+                account_purpose: "0",
             }
             return {
                 form: {
                     account_height: this.$store.state.accountHeight,
                     account_weight: this.$store.state.accountWeight,
                     account_level: this.$store.state.accountActiveLevel,
-                    account_purpose:'0',
+                    account_purpose:this.$store.state.accountPurpose,
                 },
                 post_data: post_data,
                 ChangeResult:false,
@@ -114,9 +114,10 @@
                     account_height: Number(array.account_height),
                     account_weight: Number(array.account_weight),
                     account_level: array.account_level,
-                    account_purpos:array.account_purpose,
+                    account_purpose:array.account_purpose,
                     account_token:this.$store.state.accountToken,
                 }
+                console.log(this.post_data)
                 const json_data = JSON.stringify(this.post_data)
                 await fetch(URL, {
                     mode: 'cors',
@@ -203,10 +204,5 @@
                 event.preventDefault();
             },
         },
-        created() {
-            if (Number(this.$store.state.accountPurpose) === 2){
-                this.account_purpose = 1
-            }
-        }
     }
 </script>
