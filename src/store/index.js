@@ -17,6 +17,7 @@ export default new Vuex.Store({
         accountWeight:'',
         accountActiveLevel:'',
         accountStartDay:'',
+        accountPurpose:'',
         //Twitter投稿用カロリー情報
         intakeCalorie:'',
         consumptionCalorie:'',
@@ -44,6 +45,7 @@ export default new Vuex.Store({
             state.calorie = ""
             state.intakeCalorie = ""
             state.consumptionCalorie = ""
+            state.accountPurpose = ""
         },
         //ユーザー取得又は更新
         accountUpdate(state,data){
@@ -54,6 +56,7 @@ export default new Vuex.Store({
             state.accountWeight = data.weight
             state.accountActiveLevel = data.activlevel
             state.accountStartDay = data.startday
+            state.accountPurpose = data.purpose
         },
         //カロリー情報の取得
         calorieAdd(state,data){
