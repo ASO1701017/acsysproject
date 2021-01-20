@@ -33,7 +33,7 @@
                 <router-link to="/signup" class="h5 text-success">アカウントの新規作成</router-link>
             </div>
 
-            <!--新規登録リンク-->
+            <!--パスワード再発行リンク-->
             <div class="text-center mt-3" >
                 <router-link to="/repassword" class="h5 text-success">パスワードを<br>忘れてしまった方はこちら</router-link>
             </div>
