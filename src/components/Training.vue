@@ -1,85 +1,41 @@
 <template>
     <div class="container">
-        <b-card no-body class="mt-3">
-            <b-tabs card>
-                <b-tab title="おすすめ" active>
-                    <div class="row">
-                        <div class="card mx-3 mx-auto" style="width: 18rem;">
-                            <div class="card-body">
-                                <h5 class="card-title">2回で1200カロリー消費する脂肪燃焼 鬼ヒート:1200kcal FAT BURNING</h5>
-                                <h6 class="card-subtitle mb-2 text-muted">みおの女子トレ部</h6>
-                                <p class="card-text">動画時間20分15秒。20種類のエクササイズを組み合わせた運動です！とてもハードなので頑張っていきましょう。</p>
-                                <button v-b-modal.modal-center1 class="btn btn-outline-success" @click="set1">挑戦してみる</button>
-                            </div>
-                        </div>
-                        <div class="card mx-3 mx-auto" style="width: 18rem;">
-                            <div class="card-body">
-                                <h5 class="card-title">【1日10分】時短で100kcal消費する『有酸素&筋トレ』</h5>
-                                <h6 class="card-subtitle mb-2 text-muted">Keisuke Fitness</h6>
-                                <p class="card-text">今回は10分で100kcal消費するメニューを紹介しました！</p>
-                                <button v-b-modal.modal-center2 class="btn btn-outline-success" @click="set2">挑戦してみる</button>
-                            </div>
-                        </div>
-                        <div class="card mx-3 mx-auto" style="width: 18rem;">
-                            <div class="card-body">
-                                <h5 class="card-title">1回10分で500kcal消費する痩せ筋HIIT！自宅で簡単にカロリー消費する方法。【脂肪燃焼,FAT BURNING】</h5>
-                                <h6 class="card-subtitle mb-2 text-muted">藤井筋トレチャンネル</h6>
-                                <p class="card-text">動画時間17分。10分で500kcal消費できます！</p>
-                                <button v-b-modal.modal-center3 class="btn btn-outline-success" @click="set3">挑戦してみる</button>
-                            </div>
+        <span class="row ml-2 mt-4">
+            <span v-for="tItem in genreBox" v-bind:key="tItem.genre_ID">
+                <button @click="getTraining(tItem)" class="btn btn btn-outline-info">{{tItem.genre_name}}</button>
+            </span>
+        </span>
+        <b-card no-body class="col-auto">
+            <div class="h5 mt-2">
+                選択トレーニング：{{titleName}}
+            </div>
+            <div class="row">
+                <span v-for="trainingItem in trainingBox" v-bind:key="trainingItem.url_ID" class="mx-auto col-md-4 mb-2">
+                    <div class="card" >
+                        <div class="card-body">
+                            <h5 class="card-title">{{trainingItem.url_title}}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{trainingItem.url_subtitle}}</h6>
+                            <p class="card-text">消費カロリー：{{trainingItem.url_calorie}}</p>
+                            <button @click="openTrainingModal(trainingItem)" class="btn btn-outline-success" >挑戦してみる</button>
                         </div>
                     </div>
-                </b-tab>
-            </b-tabs>
+                </span>
+            </div>
         </b-card>
-
-        <b-modal id="modal-center1" centered title="2回で1200カロリー消費する脂肪燃焼 鬼ヒート:1200kcal FAT BURNING">
-            <b-embed
-                    type="iframe"
-                    aspect="16by9"
-                    src="https://www.youtube.com/embed/ldz_t6UJt_I"
-                    allowfullscreen></b-embed>
-
-            <template v-slot:modal-footer="{cancel }">
-                <b-button @click="cancel()">
-                    Cancel
-                </b-button>
-                <b-button variant="success" @click="addTraining">
-                    OK
-                </b-button>
-            </template>
-
-        </b-modal>
-        <b-modal id="modal-center2" centered title="【1日10分】時短で100kcal消費する『有酸素&筋トレ』">
-            <b-embed
-                    type="iframe"
-                    aspect="16by9"
-                    src="https://www.youtube.com/embed/Dj5EmkCK0gY"
-                    allowfullscreen></b-embed>
-
-            <template v-slot:modal-footer="{cancel }">
-                <b-button @click="cancel()">
-                    Cancel
-                </b-button>
-                <b-button variant="success" @click="addTraining">
-                    OK
-                </b-button>
-            </template>
-        </b-modal>
-        <b-modal id="modal-center3" centered title="1回10分で500kcal消費する痩せ筋HIIT！自宅で簡単にカロリー消費する方法。【脂肪燃焼,FAT BURNING】">
-            <b-embed
-                    type="iframe"
-                    aspect="16by9"
-                    src="https://www.youtube.com/embed/ikmRh6WPVo0"
-                    allowfullscreen></b-embed>
-            <template v-slot:modal-footer="{cancel }">
-                <b-button @click="cancel()">
-                    Cancel
-                </b-button>
-                <b-button variant="success" @click="addTraining">
-                    OK
-                </b-button>
-            </template>
+        <!--モーダル-->
+        <b-modal ref="trainingModal" :title=selectBox.url_title hide-footer>
+            <div class="form-group mt-auto">
+                <b-embed
+                        type="iframe"
+                        aspect="16by9"
+                        src=selectBox.url
+                        allowfullscreen></b-embed>
+                <!--ボタン-->
+                <div class="mt-4 row float-right">
+                    <button @click="closTrainingModal" class="btn btn-outline-secondary mr-3">キャンセル</button>
+                    <button @click="addTraining" class="btn btn-outline-success mr-3">追加</button>
+                </div>
+            </div>
         </b-modal>
     </div>
 </template>
@@ -89,39 +45,74 @@
         name: "Training",
         data(){
             return{
-                title:"",
-                calorie:"",
                 day:"",
-                addItem:[],
+                addIntakeItem:[],
+                //分類
+                genreBox:[],
+                trainingGetBox:[],
+                trainingBox:[],
+                selectBox:[],
+                titleName:"",
             }
         },methods:{
-            set1(){
-                this.title ="2回で1200カロリー消費する脂肪燃焼 鬼ヒート:1200kcal FAT BURNING"
-                this.calorie = 1200
+            //分類取得
+            getTraining:async function(trainigItem){
+                //ローディングアニメーションを起動
+                this.$store.commit("setLoading", true)
+                this.trainingGetBox.splice(-this.trainingGetBox.length)
+                this.trainingGetBox.push({
+                    genre_ID:trainigItem.genre_ID
+                })
+                this.titleName = trainigItem.genre_name
+                const URL = "https://fat3lak1i2.execute-api.us-east-1.amazonaws.com/acsys/calorie/trainingurl"
+
+                const json_data = JSON.stringify(this.trainingGetBox)
+                await fetch(URL,{
+                    mode:'cors',
+                    method:'POST',
+                    body:json_data,
+                    headers:{'Content-type':'application'},
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        this.trainingBox = data
+                        console.log("トレーニング取得:ok")
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                        console.log("トレーニング取得:ng")
+                        alert("エラーが発生しました。もう一度やり直してください")
+                    })
+                //ローディングアニメーションを終了
+                this.$store.commit("setLoading", false)
             },
-            set2(){
-                this.title ="【1日10分】時短で100kcal消費する『有酸素&筋トレ』"
-                this.calorie = 100
+            //トレーニングのモーダルを開く
+            openTrainingModal(selectItem){
+                this.$refs['trainingModal'].show()
+                this.selectBox = selectItem
+                console.log(this.selectBox)
             },
-            set3(){
-                this.title ="1回10分で500kcal消費する痩せ筋HIIT！自宅で簡単にカロリー消費する方法。【脂肪燃焼,FAT BURNING】"
-                this.calorie = 100
+            //トレーニングのモーダルを閉じる
+            closTrainingModal() {
+                this.$refs['trainingModal'].hide()
             },
             addTraining:async function(){
+                this.closTrainingModal()
+                //ローディングアニメーションを起動
+                this.$store.commit("setLoading", true)
 
-                this.addItem.push({
+                this.addIntakeItem.push({
                     add_date:Number(this.day),
-                    motion_calorie: this.calorie,
-                    motion_name: this.title,
+                    motion_calorie: this.selectBox.url_calorie,
+                    motion_name: this.selectBox.url_title,
                 })
 
                 const URL = "https://fat3lak1i2.execute-api.us-east-1.amazonaws.com/acsys/users/schedule/motion"
 
                 this.trainingArray ={
                     'account_token':this.$store.state.accountToken,
-                    'data':this.addItem
+                    'data':this.addIntakeItem
                 }
-                console.log(this.addItem)
 
                 const json_data = JSON.stringify(this.trainingArray)
                 await fetch(URL,{
@@ -132,8 +123,9 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data)
                         let check = data["isSuccess"]
+                        //ローディングアニメーションを終了
+                        this.$store.commit("setLoading", false)
                         if (check === true){
                             console.log("トレーニング登録:ok")
                             this.$router.replace("/savecalorie")
@@ -148,10 +140,52 @@
                     })
             }
         },
-        created() {
+        async created() {
+            //ローディングアニメーションを起動
+            this.$store.commit("setLoading", true)
             let today = new Date()
             this.day = today.getFullYear() + ("0" + (today.getMonth() + 1)).slice(-2) +("0" +today.getDate()).slice(-2)
-            console.log(this.day)
+            const URL = "https://fat3lak1i2.execute-api.us-east-1.amazonaws.com/acsys/calorie/trainingurl"
+            await fetch(URL,{
+                mode:'cors',
+                method:'Get',
+                headers:{'Content-type':'application'},
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("トレーニング分類取得:ok")
+                    this.genreBox = data
+                })
+                .catch(function (error) {
+                    console.log(error)
+                    console.log("トレーニング分類取得:ng")
+                    alert("エラーが発生しました。もう一度やり直してください")
+                })
+            this.trainingGetBox.push({
+                genre_ID:3
+            })
+            this.titleName = "背筋"
+            const URL2 = "https://fat3lak1i2.execute-api.us-east-1.amazonaws.com/acsys/calorie/trainingurl"
+
+            const json_data = JSON.stringify(this.trainingGetBox)
+            await fetch(URL2,{
+                mode:'cors',
+                method:'POST',
+                body:json_data,
+                headers:{'Content-type':'application'},
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.trainingBox = data
+                    console.log("トレーニング取得:ok")
+                })
+                .catch(function (error) {
+                    console.log(error)
+                    console.log("トレーニング取得:ng")
+                    alert("エラーが発生しました。もう一度やり直してください")
+                })
+            //ローディングアニメーションを終了
+            this.$store.commit("setLoading", false)
         }
     }
 </script>
