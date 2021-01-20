@@ -1,50 +1,39 @@
 <template>
     <div class="container">
-        <h3 class="pt-4">始めてから{{timeDay}}日が立ちました！！</h3>
+        <div class="pt-4 h2">今日で{{timeDay}}日目！</div>
         <div class="row pt-2 pb-2">
-            <button @click="downYear" class="btn btn-outline-danger btn-sm">-1</button>
+            <button @click="downYear" class="btn btn-outline-danger btn-sm" v-if="this.check2">-1</button>
             <h4 class="pt-1 px-2">{{year}}年</h4>
-            <button @click="upYear" class="btn btn-outline-success btn-sm">+1</button>
+            <button @click="upYear" class="btn btn-outline-success btn-sm" v-if="this.check">+1</button>
         </div>
-
-
-        <div v-if="!spiner">
-            <button class="btn btn-primary" type="button" disabled>
-                <span class="spinner-border" role="status" aria-hidden="true"></span> Loading...</button>
-        </div>
-        <div v-if="spiner">
-            <div class="row">
-                <table class="table table-sm col-lg-5 col-auto" >
-                    <thead>
-                    <tr class="table-success">
-                        <th class="month">月</th>
-                        <th class="food">摂取カロリー</th>
-                        <th class="training">消費カロリー</th>
-                        <th class="training">貯金</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="item in 12" v-bind:key="item">
-                        <td>{{ item }}月</td>
-                        <td>{{intaked[item-1]}}</td>
-                        <td>{{burned[item-1]}}</td>
-                        <td>{{calorieBox[item-1]}}</td>
-                    </tr>
-                    <td v-if="!burned.length">リストは空です</td>
-                    </tbody>
-                </table>
-                <StatisticsChart class="col-lg-7" :chart-data="dataCollection" :options="dataOptions"></StatisticsChart>
-                </div>
-        </div>
+        <div class="row">
+            <table class="table table-sm col-lg-5 col-auto" >
+                <thead>
+                <tr class="table-success">
+                    <th class="month">月</th>
+                    <th class="food">摂取カロリー</th>
+                    <th class="training">消費カロリー</th>
+                    <th class="training">貯金</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="item in 12" v-bind:key="item">
+                    <td>{{ item }}月</td>
+                    <td>{{intaked[item-1]}}</td>
+                    <td>{{burned[item-1]}}</td>
+                    <td>{{calorieBox[item-1]}}</td>
+                </tr>
+                <td v-if="!burned.length">リストは空です</td>
+                </tbody>
+            </table>
+            <StatisticsChart class="col-lg-7" :chart-data="dataCollection" :options="dataOptions"></StatisticsChart>
+            </div>
     </div>
 </template>
 
 <script>
-
     import StatisticsChart from "./SaveCalorieChart";
-
     export default {
-
         name: "Statistics",
         data(){
             return{
@@ -57,8 +46,10 @@
                 calorieBox:[],
                 dataCollection: null,
                 dataOptions:null,
-                spiner:false
-
+                spiner:false,
+                toyear:new Date(),
+                check:false,
+                check2:true,
             }
         },
         components: {
@@ -154,14 +145,27 @@
             },
             upYear(){
                 this.year+=1
+                if (Number(this.year) === Number(this.toyear.getFullYear())){
+                    this.check = false
+                }
+                if (Number(this.year) >= 2020){
+                    this.check2 = true
+                }
             },
             downYear(){
                 this.year-=1
+                if (Number(this.year) <= Number(this.toyear.getFullYear())){
+                    this.check = true
+                }
+                if (Number(this.year) === 2020){
+                    this.check2 = false
+                }
             }
         },
         watch:{
             year:async function () {
-                this.spiner = false
+                //ローディングアニメーションを起動
+                this.$store.commit("setLoading", true)
                 //通信
                 const URL = "https://fat3lak1i2.execute-api.us-east-1.amazonaws.com/acsys/users/statistics"
                 this.dataGet={
@@ -195,12 +199,9 @@
                         console.log(error)
                         alert("エラーが発生しました。もう一度やり直してください")
                     })
-                this.spiner = true
+                //ローディングアニメーションを終了
+                this.$store.commit("setLoading", false)
             },
         }
     }
 </script>
-
-<style scoped>
-
-</style>
