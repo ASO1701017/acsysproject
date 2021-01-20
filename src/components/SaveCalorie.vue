@@ -69,7 +69,6 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data)
                     const flg_data = data['isSuccess']
                     if(flg_data){
                         console.log('ユーザー情報取得:ok')
@@ -82,7 +81,7 @@
                             weight:data['account_weight'],
                             activlevel:data['account_level'],
                             startday:data['regist_date'],
-                            purpose:data['account_purpos'],
+                            purpose:data['account_purpose'],
                         }
                         this.$store.commit('accountUpdate',this.userInfBox)
                     }else {
@@ -107,7 +106,6 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data)
                     console.log("ユーザーカロリー取得:ok")
                     this.totalCalorie =data["difference_calorie"]
                     this.todayPlusCalorie = data["today_intaked"]
@@ -130,7 +128,7 @@
                 })
 
             //貯金を求める
-            if (Number(this.$store.state.accountPurpose) === 1){
+            if (this.$store.state.accountPurpose === "増量"){
                 this.totalCalorie = -(this.totalCalorie)
                 this.todayCalorie =  this.todayPlusCalorie - this.todayMinusCalorie
                 this.yestardayCalorie = this.yestardayIntaked - this.yestardayBurned
@@ -144,36 +142,35 @@
             this.fillData()
             //コメント
             let kcalKg = Math.round(this.totalCalorie / 7305 *100)/100
-            if (kcalKg<0){
-                this.comment = "体重が"+-(kcalKg)+"kg増えました。"
-                // kcalKg = -(kcalKg)
-                if (Number(this.$store.state.accountPurpose) === 1){
-                    if (0>kcalKg&&kcalKg>-1){
-                        this.comment += "体重が増え始めましたね！無理せずこのまま継続していきましょう。"
-                    }else if (-1>kcalKg&&kcalKg>-3){
-                        this.comment += "いいですね！この調子でいきましょう！"
-                    }else {
-                        this.comment += "増量おめでとうございます！増量のし過ぎは体調にも影響があるので、体と相談しながらやりましょう！"
-                    }
-                }else {
-                    this.comment += "体重が増加傾向にあります。毎日摂取カロリーを減らしたり、運動を少し増やしてみましょう！"
+            if (this.$store.state.accountPurpose === "増量"){
+                if (kcalKg<0){
+                    this.comment += "体重が"+ -(kcalKg) +"kg減りました。体重が減少傾向にあります。毎日摂取カロリーを増やしたり、運動を少し減らしたりしてみましょう！"
                 }
-            }else if (kcalKg>0){
-                this.comment = "体重が"+kcalKg+"kg減りました。"
-                kcalKg = -(kcalKg)
-                if (Number(this.$store.state.accountPurpose) === 1){
-                    this.comment += "体重が増加傾向にあります。毎日摂取カロリーを増やしたり、運動量を減らしてみましょう！"
-                }else {
-                    if (0>kcalKg&&kcalKg>-1){
-                        this.comment += "体重が減り始めましたね！無理せずこのまま継続していきましょう。"
-                    }else if (-1>kcalKg&&kcalKg>-3){
-                        this.comment += "いいですね！この調子でいきましょう！"
-                    }else {
-                        this.comment += "減量おめでとうございます！減量のし過ぎは体調にも影響があるので、体と相談しながらやりましょう！"
-                    }
+                else if (kcalKg===0){
+                    this.comment = "体重に変化はありません"
                 }
-            }else {
-                this.comment = "体重に変化はありません"
+                else if (2>=kcalKg&&kcalKg>0){
+                    this.comment += "体重が"+ kcalKg +"kg増えました。体重が増え始めましたね！無理せずこのまま継続していきましょう。"
+                }else if (5>kcalKg&&kcalKg>2){
+                    this.comment += "体重が"+ kcalKg +"kg増えました。いいですね！この調子でいきましょう！"
+                }else {
+                    this.comment += "体重が"+ kcalKg +"kg増えました。増量おめでとうございます！増量のし過ぎは体調にも影響があるので、体と相談しながらやりましょう！"
+                }
+            }
+            else {
+                if (kcalKg<0){
+                    this.comment += "体重が"+ -(kcalKg) +"kg増えました。体重が増加傾向にあります。毎日摂取カロリーを減らしたり、運動を少し増やしたりしてみましょう！"
+                }
+                else if (kcalKg===0){
+                    this.comment = "体重に変化はありません"
+                }
+                else if (2>=kcalKg&&kcalKg>0){
+                    this.comment += "体重が"+ kcalKg +"kg減りました。体重が減り始めましたね！無理せずこのまま継続していきましょう。"
+                }else if (5>kcalKg&&kcalKg>2){
+                    this.comment += "体重が"+ kcalKg +"kg減りました。いいですね！この調子でいきましょう！"
+                }else {
+                    this.comment += "体重が"+ kcalKg +"kg減りました。減量おめでとうございます！減量のし過ぎは体調にも影響があるので、体と相談しながらやりましょう！"
+                }
             }
             this.$store.commit("setLoading", false)
         },
