@@ -138,6 +138,8 @@
             },
             //摂取リストの削除
             removeIntakeItem:async function () {
+                //ローディングアニメーションを起動
+                this.$store.commit("setLoading", true)
                 //モーダルを閉じる
                 this.hidedeleteModal()
                 //削除処理
@@ -172,8 +174,12 @@
                 //リストから削除
                 const index = this.intaked.indexOf(this.delete);
                 this.intaked.splice(index, 1)
+                //ローディングアニメーションを終了
+                this.$store.commit("setLoading", false)
             },
             removeConItem:async function () {
+                //ローディングアニメーションを起動
+                this.$store.commit("setLoading", true)
                 //モーダルを閉じる
                 this.hidedeleteConModal()
                 //削除処理
@@ -208,6 +214,8 @@
                 //リストから削除
                 const index = this.burned.indexOf(this.delete);
                 this.burned.splice(index, 1)
+                //ローディングアニメーションを終了
+                this.$store.commit("setLoading", false)
             },
         },
         async created() {
