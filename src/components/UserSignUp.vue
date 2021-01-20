@@ -34,7 +34,7 @@
             </div>
 
             <!--性別 -->
-            <div class="Category_Gender row mt-4">
+            <div class="row mt-4">
                 <label id="GenderTitle" class="col-md-3  col-form-label text-right col-3">性別</label>
                 <div class="form-check mt-2 ml-3 col-md-2 col-auto">
                     <input class="form-check-input" type="radio" name="Gender" id="male" value="男性" v-model="form.account_gender" checked="checked">
@@ -114,8 +114,22 @@
                     </tr>
                 </table>
             </div>
+            <!--見出し-->
+            <h4 class="text-success border-bottom border-success mt-5 col-md-10 mx-auto">利用目的</h4>
+            <!--利用目的-->
+            <div class="row mt-4">
+                <label id="PurposeTitle" class="col-md-3  col-form-label text-right col-3">目的</label>
+                <div class="form-check mt-2 ml-3 col-md-2 col-auto">
+                    <input class="form-check-input" type="radio" name="Purpose" id="down" value="0" v-model="form.account_purpose" checked="checked">
+                    <label class="form-check-label" for="down">減量</label>
+                </div>
+                <div class="form-check mt-2 col-md-2 col-auto">
+                    <input class="form-check-input" type="radio" name="Purpose" id="up" value="1" v-model="form.account_purpose">
+                    <label class="form-check-label" for="up">増量</label>
+                </div>
+            </div>
         </form>
-        <div class="row mt-3 mb-5">
+        <div class="row mt-5 mb-5">
             <button id="post_btn" class="btn btn-success col-8 mx-auto"  @click="checkHandler(form,$event)">決定</button>
         </div>
     </div>
@@ -140,6 +154,7 @@
                     account_level: '',
                     account_address: '',
                     account_pass: '',
+                    account_purpose:'0',
                 },
                 post_data: [],
                 errors:[],
@@ -217,7 +232,7 @@
                     account_address: array.account_address,
                     account_pass: array.account_pass,
                     account_token:newToken,
-
+                    account_purpos:array.account_purpose,
                 }
                 const json_data = JSON.stringify(this.post_data)
                 await fetch(URL, {
@@ -391,6 +406,8 @@
                     this.SignupValidation.SignupLevelResult = ""
                     this.levelResult = true
                 }
+
+                //目的のバリデーション必要なし
 
                 //バリデーションをクリアした時にsign-up
                 console.log(this.errors)
