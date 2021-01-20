@@ -120,11 +120,11 @@
             <div class="row mt-4">
                 <label id="PurposeTitle" class="col-md-3  col-form-label text-right col-3">目的</label>
                 <div class="form-check mt-2 ml-3 col-md-2 col-auto">
-                    <input class="form-check-input" type="radio" name="Purpose" id="down" value="0" v-model="form.account_purpose" checked="checked">
+                    <input class="form-check-input" type="radio" name="Purpose" id="down" value="減量" v-model="form.account_purpose" checked="checked">
                     <label class="form-check-label" for="down">減量</label>
                 </div>
                 <div class="form-check mt-2 col-md-2 col-auto">
-                    <input class="form-check-input" type="radio" name="Purpose" id="up" value="1" v-model="form.account_purpose">
+                    <input class="form-check-input" type="radio" name="Purpose" id="up" value="増量" v-model="form.account_purpose">
                     <label class="form-check-label" for="up">増量</label>
                 </div>
             </div>
@@ -154,7 +154,7 @@
                     account_level: '',
                     account_address: '',
                     account_pass: '',
-                    account_purpose:'0',
+                    account_purpose:'減量',
                 },
                 post_data: [],
                 errors:[],
