@@ -22,7 +22,6 @@
                     <div class="invalid-feedback text-center">{{loginValidation.loginPassResult}}</div>
                 </div>
 
-
                 <!--ログインボタン-->
                 <div class="col text-center">
                     <button v-on:click="checkFrom" class="btn btn-success btn-lg mx-auto col-lg-6 col-md-8 mt-4">ログイン</button>
@@ -32,6 +31,11 @@
             <!--新規登録リンク-->
             <div class="text-center mt-3" >
                 <router-link to="/signup" class="h5 text-success">アカウントの新規作成</router-link>
+            </div>
+
+            <!--新規登録リンク-->
+            <div class="text-center mt-3" >
+                <router-link to="/repassword" class="h5 text-success">パスワードを<br>忘れてしまった方はこちら</router-link>
             </div>
 
         </section>

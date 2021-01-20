@@ -17,6 +17,7 @@ import PasswordChange from "../components/PasswordChange"
 import NotFound from "../components/NotFound";
 import CalorieShare from "../components/CalorieShare";
 import UpdateInformation from "../components/UpdateInformation";
+import RePassword from "../components/RePassword";
 
 // store
 import Store from '../store/index'
@@ -116,6 +117,15 @@ const router = new Router({
             path: '/tweet',
             name: 'tweet',
             component: CalorieShare,
+        },
+        {
+            //パスワード再発行
+            path: '/repassword',
+            name: 'repassword',
+            component: RePassword,
+            meta: {
+                isPublic: true
+            }
         },
         {
             //NotFound
