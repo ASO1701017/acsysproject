@@ -162,7 +162,7 @@
                 this.comment = "体重が"+kcalKg+"kg減りました。"
                 kcalKg = -(kcalKg)
                 if (Number(this.$store.state.accountPurpose) === 1){
-                    this.comment += "体重が現象傾向にあります。毎日摂取カロリーを増やしたり、運動量を減らしてみましょう！"
+                    this.comment += "体重が増加傾向にあります。毎日摂取カロリーを増やしたり、運動量を減らしてみましょう！"
                 }else {
                     if (0>kcalKg&&kcalKg>-1){
                         this.comment += "体重が減り始めましたね！無理せずこのまま継続していきましょう。"
@@ -175,14 +175,6 @@
             }else {
                 this.comment = "体重に変化はありません"
             }
-            // if (this.totalCalorie>500){
-            //     this.comment = "いい感じに貯金が貯まってきましたね！無理をせずこの調子で頑張っていきましょう。"
-            // }else if (this.totalCalorie>=0){
-            //     this.comment = "今日も一日頑張っていきましょう！"
-            // } else{
-            //     this.comment = "貯金がマイナスになってしまいましたね。こんな時は運動する量を増やしたり、食事を見直してみたりしましょう！"
-            // }
-            //ローディングアニメーションを終了
             this.$store.commit("setLoading", false)
         },
         mounted () {
