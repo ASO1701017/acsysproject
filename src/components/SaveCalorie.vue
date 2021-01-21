@@ -50,6 +50,9 @@
                 //グラフの関数
                 dataCollection: null,
                 dataOptions:null,
+                todayCollor:"",
+                yestardayCollor:"",
+                backYestardayCollor:"",
             }
         },
         async created() {
@@ -138,8 +141,6 @@
                 this.yestardayCalorie = this.yestardayBurned - this.yestardayIntaked
                 this.backYestardayCalorie = this.backYestardayBurned - this.backYestardayIntaked
             }
-            //グラフ描画
-            this.fillData()
             //コメント
             let kcalKg = Math.round(this.totalCalorie / 7305 *100)/100
             if (this.$store.state.accountPurpose === "増量"){
@@ -172,6 +173,26 @@
                     this.comment += "体重が"+ kcalKg +"kg減りました。減量おめでとうございます！減量のし過ぎは体調にも影響があるので、体と相談しながらやりましょう！"
                 }
             }
+
+            //グラフカラー選定
+            if (this.todayCalorie >= 0){
+                this.todayCollor = "mediumspringgreen"
+            }else {
+                this.todayCollor = "crimson"
+            }
+            if (this.yestardayCalorie >= 0){
+                this.yestardayCollor = "mediumspringgreen"
+            }else {
+                this.yestardayCollor = "crimson"
+            }
+            if (this.backYestardayCalorie >= 0){
+                this.backYestardayCollor = "mediumspringgreen"
+            }else {
+                this.backYestardayCollor = "crimson"
+            }
+            //グラフ描画
+            this.fillData()
+
             this.$store.commit("setLoading", false)
         },
         mounted () {
@@ -184,7 +205,7 @@
                     labels: ['2日前', '1日前','今日'],
                     datasets: [
                         {
-                            backgroundColor: '#ff7e00',
+                            backgroundColor: [this.todayCollor, this.yestardayCollor, this.backYestardayCollor],
                             data: [this.backYestardayCalorie,this.yestardayCalorie,this.todayCalorie]
                         },
                     ],

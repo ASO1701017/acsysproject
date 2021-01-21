@@ -50,6 +50,7 @@
                 toyear:new Date(),
                 check:false,
                 check2:true,
+                collorBox:[],
             }
         },
         components: {
@@ -78,7 +79,9 @@
                     labels: ['1月', '2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
                     datasets: [
                         {
-                            backgroundColor: '#58a125',
+                            backgroundColor: [this.collorBox[0],this.collorBox[1],this.collorBox[2],this.collorBox[3],this.collorBox[4],
+                                this.collorBox[5],this.collorBox[6],this.collorBox[7],this.collorBox[8],this.collorBox[9],this.collorBox[10],
+                                this.collorBox[11],],
                             data: [this.calorieBox[0], this.calorieBox[1],this.calorieBox[2],this.calorieBox[3],this.calorieBox[4],
                                 this.calorieBox[5],this.calorieBox[6],this.calorieBox[7],this.calorieBox[8],this.calorieBox[9],
                                 this.calorieBox[10],this.calorieBox[11]]
@@ -186,8 +189,21 @@
                             console.log("カロリー統計取得:ok")
                             this.intaked = data["intaked"]
                             this.burned = data["burned"]
+                            if (this.$store.state.accountPurpose==="減量"){
+                                for (let i = 0; i < 12; i++) {
+                                    this.calorieBox[i] =  this.burned[i] - this.intaked[i]
+                                }
+                            }else {
+                                for (let i = 0; i < 12; i++) {
+                                    this.calorieBox[i] =  this.intaked[i] - this.burned[i]
+                                }
+                            }
                             for (let i = 0; i < 12; i++) {
-                                this.calorieBox[i] =  this.burned[i] - this.intaked[i]
+                                if (this.calorieBox[i] >= 0){
+                                    this.collorBox[i] = "mediumspringgreen"
+                                }else{
+                                    this.collorBox[i] = "crimson"
+                                }
                             }
                             this.fillData()
                         }else {
