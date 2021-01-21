@@ -28,12 +28,12 @@
                 <b-embed
                         type="iframe"
                         aspect="16by9"
-                        src=selectBox.url
+                        :src="this.selectBox.url"
                         allowfullscreen></b-embed>
                 <!--ボタン-->
                 <div class="mt-4 row float-right">
                     <button @click="closTrainingModal" class="btn btn-outline-secondary mr-3">キャンセル</button>
-                    <button @click="addTraining" class="btn btn-outline-success mr-3">追加</button>
+                    <button @click="addTraining" class="btn btn-outline-success mr-3">完了</button>
                 </div>
             </div>
         </b-modal>
