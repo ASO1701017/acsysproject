@@ -6,6 +6,8 @@
                     v-model="selectedDate"
                     is-inline
                     is-expanded
+                    :max-date="new Date()"
+                    :attributes='attrs'
             ></v-date-picker>
             <div v-if="!spiner">
                 <button class="btn btn-primary mt-3" type="button" disabled>
@@ -105,6 +107,13 @@
                 intaked:[],
                 spiner:true,
                 delete:[],
+                attrs: [
+                    {
+                        key: 'today',
+                        dot: true,
+                        dates: new Date(),
+                    },
+                ],
             }
         },
         methods:{
