@@ -19,6 +19,7 @@ import NotFound from "../components/NotFound";
 import CalorieShare from "../components/CalorieShare";
 import UpdateInformation from "../components/UpdateInformation";
 import RePassword from "../components/RePassword";
+import CountTraining from "../components/CountTraining";
 
 // store
 import Store from '../store/index'
@@ -131,6 +132,12 @@ const router = new Router({
             path: '/tweet',
             name: 'tweet',
             component: CalorieShare,
+        },
+        {
+            //回数記録
+            path: '/counttraining',
+            name: 'counttraining',
+            component: CountTraining,
         },
         {
             //パスワード再発行

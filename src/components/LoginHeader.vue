@@ -13,6 +13,7 @@
                     <b-nav-item href="/statistics">統計</b-nav-item>
                     <b-nav-item href="/training">トレーニング</b-nav-item>
                     <b-nav-item href="/tweet">Twitterに投稿</b-nav-item>
+                    <b-nav-item href="/counttraining">回数を数える</b-nav-item>
                 </b-navbar-nav>
                 <b-navbar-nav class="ml-auto">
                     <b-nav-item-dropdown right>
