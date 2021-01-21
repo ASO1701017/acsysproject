@@ -97,6 +97,7 @@
                     <span class="spinner-border mr-1" role="status" aria-hidden="true"></span> Loading...</button>
             </div>
             <div v-if="foodSpiner">
+                <input type="text" placeholder="索引" v-model="keyword" class="form-control mb-2">
                 <table class="table table-hover table-sm ">
                     <thead>
                     <tr class="table-info">
@@ -105,7 +106,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="item in foodBox" v-bind:key="item.id">
+                    <tr v-for="item in filteredFood" v-bind:key="item.id">
                         <td @click="addSelectData(item.food_name,item.food_calorie)">{{ item.food_name }}</td>
                         <td @click="addSelectData(item.food_name,item.food_calorie)">{{item.food_calorie}}</td>
                     </tr>
@@ -161,6 +162,7 @@
                 foodSpiner:false,
                 selectSpiner:false,
                 errorMesage:"",
+                keyword:"",
             }
         },
         methods:{
@@ -348,6 +350,16 @@
                 return this.addItem.reduce(function(sum, item) {
                     return Number(sum) + Number(item.food_calorie)
                 }, 0)
+            },
+            filteredFood: function() {
+                let foodBox = []
+                for(let i in this.foodBox) {
+                    let food = this.foodBox[i];
+                    if(food.food_name.indexOf(this.keyword) !== -1) {
+                        foodBox.push(food);
+                    }
+                }
+                return foodBox;
             }
         },
         async created() {
