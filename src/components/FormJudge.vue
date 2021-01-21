@@ -13,7 +13,7 @@
 
         <h3>選択トレーニング</h3>
         <div id="training">
-          <Training v-on:select-category="this.selectCategory"/>
+<!--          <Training v-on:select-category="this.selectCategory"/>-->
         </div>
 
         <div class="reset">
@@ -32,11 +32,6 @@
 
 <script>
 export default {
-  // props:{
-  //   EventLink:{
-  //     type:String,
-  //   }
-  // }
 }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"></script>
@@ -65,11 +60,6 @@ export default {
       reset_btn: document.getElementById("btn_reset"),
       keypoint: '',
       canvas: {},
-      // judge_id: '',
-      // burned_id: '',
-      // judge_rate: '',
-      // judge_count:'',
-      // post_data: post_data,
     }
   },
 
@@ -83,16 +73,6 @@ export default {
       })
     }
 
-    //判定ラインの線を引く
-    // this.canvas = this.$refs.canvas
-    // let ctx = this.canvas.getContext("2d");
-    // ctx.moveTo( 300, 300 ) ;
-    // ctx.lineTo( 500, 300 )
-    // ctx.strokeStyle = "red" ;
-    // ctx.lineWidth = 5;
-    // ctx.stroke();
-
-
     //poseNetのセットアップ処理
     console.log("挙動確認")
     // this.video = p5.createCapture();
@@ -103,13 +83,6 @@ export default {
       val = this.poses = results;
       ref.draw(val)
     })
-    // .then(
-    // function (){
-    //   this.draw(results)
-    // }
-    // );
-    // canvasに描画が成功したのでvideo要素を見えないようにする
-    // this.video.hide();
   },
   methods: {
     selectCategory(value){
@@ -135,11 +108,9 @@ export default {
     draw: function (poses) {
       this.poses = poses;
       console.log('描画を開始')
-      console.log(this.poses)
       if (this.poses.length > 0) {
         let pose = this.poses[0].pose;
         this.keypoint = pose.keypoints[0];
-        // console.log('部位名：' + this.keypoint.part);
         for (let i = 0; i < this.poses.length; i++) {
           // poseが持つ情報を出力
           console.log('poseが持つ情報を出力します')
@@ -154,12 +125,6 @@ export default {
               console.log(pose.nose.y);
               this.count_value += 1;
               this.should_count = false;
-              console.log(this.count_value);
-              console.log(this.should_count)
-              // this.count_disp.innerHTML = this.count_value
-              // let i =  document.getElementById("dips_count")
-              // i = this.count_value;
-              console.log(this.count_disp)
             } else if (pose.nose.y <= 240.0) {
               // 姿勢が元に戻った判定
               this.should_count = true;
@@ -169,35 +134,21 @@ export default {
             }
           }
         }
-        // image(this.video, 0, 0, width, height);
         this.drawSkeleton();
         this.drawKeypoints();
       }
       else {
         console.log('pose情報が見当たりません')
       }
-      // //判定ラインの線を引く
-      // this.canvas = this.$refs.canvas
-      // let ctx = this.canvas.getContext("2d");
-      // ctx.moveTo( 0, 0 ) ;
-      // ctx.lineTo( 200, 200 )
-      // ctx.strokeStyle = "red" ;
-      // ctx.lineWidth = 5;
-      // ctx.stroke();
     },
-
-
 
     drawKeypoints: function () {
       console.log('drawKeypoints起動')
-      console.log(this.poses.length)
       for (let i = 0; i < this.poses.length; i++) {
         let pose = this.poses[i].pose;
         for (let j = 0; j < pose.length; j++) {
           this.keypoint = pose.keypoints[j];
-          console.log('keypoint:'+this.keypoint)
           if (this.keypoint > 0.2) {
-            console.log('線を引きます')
             // シェイプの塗りに使用するカラーを設定
             this.keypoint.fill(color(0, 0, 255));
             // 線とシェイプの枠線の描画に使用するカラーを設定
@@ -208,13 +159,10 @@ export default {
       }
     },
 
-
     drawSkeleton: function () {
       console.log('drawSkeleton起動')
-      console.log(this.poses.length)
       for (let i = 0; i < this.poses.length; i++) {
         let skeleton = this.poses[i].skeleton;
-        console.log('skeleton:'+skeleton)
         for (let j = 0; j < skeleton.length; j++) {
           let partA = skeleton[j][0];
           let partB = skeleton[j][1];
@@ -223,26 +171,9 @@ export default {
           this.canvas = this.$refs.canvas
           let ctx = this.canvas.getContext("2d");
           ctx.strokeStyle = "green";
-
-          // ctc.stroke();
-          // this.canvas.getContext('2d').stroke('rgb(0,255,0)')
-          // stroke('rgb(0,255,0)');
-          console.log('骨格の線を描画します')
-          // strokeWeight(5);
-          console.log(partA.position.x)
-          console.log(partA.position.y)
-          console.log(partB.position.x)
-          console.log(partB.position.y)
-          console.log("stroke起動")
-          console.log("トレーニング内容："+this.EventLink)
-          ctx.lineTo(partA.position.x, partA.position.y)
-          ctx.stroke()
-          // line(partA.position.x, partA.position.y, partB.position.x, partB.position.y);
         }
       }
     },
-
-    //Uncaught (in promise) TypeError: Failed to execute 'stroke' on 'CanvasRenderingContext2D': parameter 1 is not of type 'Path2D'
 
     //回数の値をリセットするメソッド
     reset: function () {
