@@ -75,11 +75,11 @@
             <hr class="featurette-divider  mt-5 pb-5">
 
             <div class="row featurette">
-                <div class="col-md-7">
-                    <h2 class="featurette-heading">シンプルなデザイン<span class="text-muted"> 直感的に操作できる。</span></h2>
+                <div class="col-md-6">
+                    <h2 class="featurette-heading">シンプルなデザイン<span class="text-muted"><br> 直感的に操作できる。</span></h2>
                     <p class="lead">画像に表示されているのは、カロリー貯金画面です。視覚的にわかりやすいようにグラフやカレンダーを使用しています。スマートフォンでも同じように扱えます。</p>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-6">
                     <img src="../assets/topPage.png" class="img-fluid" alt="Responsive image">
                 </div>
             </div><!-- /.row featurette -->
@@ -91,9 +91,9 @@
                     <a href="https://twitter.com/acsys_calorie" class="twitter">acsys公式Twitter</a>
                 </div>
             </div>
-            <p class="float-right"><button class="btn btn-outline-success" @click="scrollTop()">トップに戻る</button></p>
             <p>2020 麻生ビジネス専門学校情報工学科2班<br>
                 お問い合わせ:1701017@st.asojuku.ac.jp</p>
+            <p class="float-right"><button class="btn btn-outline-success" @click="scrollTop()">トップに戻る</button></p>
         </footer><!-- /.footer -->
     </div>
 </template>
