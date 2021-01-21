@@ -26,6 +26,13 @@ export default new Vuex.Store({
         loading: false,
         //日付指定登録
         date:'',
+        //判定必須情報
+        motion1:'', //選択トレーニング内容
+        motion2:'', //選択トレーニングc平均メッツ値
+        judge_count:'', //判定カウント値
+        judge_rate:'', //トレーニング精度
+        add_date:'',//判定した日付
+
     },
 
     mutations:{
@@ -72,6 +79,20 @@ export default new Vuex.Store({
         setDate(state,dateInput){
             state.date = dateInput
         },
+        //判定情報のセット
+        // setMenu(state, val) {
+        //     state.motion1= val
+        //     state.motion2= val
+        // },
+        //トレーニングフォーム判定の情報取得
+        judgeADD(state,data){
+          state.motion_name = data.motion_name
+          state.motion_calorie = data.motion_calorie
+          state.judge_rate = data.judge_rate
+          state.judge_count = data.judge_count
+          //判定した日付
+          state.add_date = data.add_date
+        }
     },
 
     plugins: [createPersistedState({

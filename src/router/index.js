@@ -14,6 +14,7 @@ import Training from "../components/Training"
 import Statistics from "../components/Statistics"
 import UserChange from "../components/UserChange"
 import PasswordChange from "../components/PasswordChange"
+import FormJudge from "../components/FormJudge"
 import NotFound from "../components/NotFound";
 import CalorieShare from "../components/CalorieShare";
 import UpdateInformation from "../components/UpdateInformation";
@@ -23,6 +24,7 @@ import RePassword from "../components/RePassword";
 import Store from '../store/index'
 
 Vue.use(Router)
+
 
 const router = new Router({
     //#を外すためhistory
@@ -74,6 +76,12 @@ const router = new Router({
             name: 'intakecalorie',
         },
         {
+            //投稿
+            path: '/calorieshare',
+            component: CalorieShare,
+            name: 'calorieshare',
+        },
+        {
             //カレンダー
             path: "/calendar",
             component: Calender,
@@ -84,6 +92,12 @@ const router = new Router({
             path: "/training",
             name: "training",
             component: Training,
+        },
+        {
+            //フォーム判定
+            path: "/formjudge",
+            name: "formjudge",
+            component: FormJudge,
         },
         {
             //統計

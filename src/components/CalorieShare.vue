@@ -22,6 +22,7 @@
         name: "Share",
         data() {
             return {
+                // HashTag: "",
                 TweetDetail: "今までの貯金:" + this.$store.state.calorie+"kcal\n" + "今日の記録\n摂取カロリー:" + + this.$store.state.intakeCalorie
                     +"kcal\n消費カロリー:" + this.$store.state.consumptionCalorie + "kcal\n",
                 HashTag: "",
