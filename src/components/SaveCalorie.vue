@@ -205,7 +205,7 @@
                     labels: ['2日前', '1日前','今日'],
                     datasets: [
                         {
-                            backgroundColor: [this.todayCollor, this.yestardayCollor, this.backYestardayCollor],
+                            backgroundColor: [ this.backYestardayCollor,this.yestardayCollor,this.todayCollor],
                             data: [this.backYestardayCalorie,this.yestardayCalorie,this.todayCalorie]
                         },
                     ],
