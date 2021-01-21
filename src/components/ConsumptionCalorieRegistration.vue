@@ -98,15 +98,16 @@
                     <span class="spinner-border mr-1" role="status" aria-hidden="true"></span> Loading...</button>
             </div>
             <div v-if="trainingSpiner">
+                <input type="text" placeholder="索引" v-model="keyword" class="form-control mb-2">
                 <table class="table table-hover table-sm">
                     <thead>
                     <tr class="table-info">
-                        <th class="food" scope="col">トレーニング</th>
+                        <th class="training" scope="col">トレーニング</th>
                         <th class="calorie" scope="col">メッツ</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="item in trainingBox" v-bind:key="item.id">
+                    <tr v-for="item in filteredTraining" v-bind:key="item.id">
                         <td @click="addSelectData(item.motion_name,item.motion_calorie)">{{ item.motion_name }}</td>
                         <td @click="addSelectData(item.motion_name,item.motion_calorie)">{{item.motion_calorie}}</td>
                     </tr>
@@ -188,6 +189,7 @@
                 selectSpiner:false,
                 trainingSpiner:false,
                 errorMesage:"",
+                keyword:"",
             }
         },
         methods:{
@@ -228,6 +230,7 @@
             //運動選択のモーダルを閉じる
             closeTrainingSelectModal() {
                 this.$refs['selectActionModal'].hide()
+                this.keyword = ""
             },
             //分類選択に戻る
             backTrainingSelectModal(){
@@ -499,6 +502,16 @@
                 return this.addItem.reduce(function(sum, item) {
                     return Number(sum) + Number(item.motion_calorie)
                 }, 0)
+            },
+            filteredTraining: function() {
+                let trainingBox = []
+                for(let i in this.trainingBox) {
+                    let training = this.trainingBox[i];
+                    if(training.motion_name.indexOf(this.keyword) !== -1) {
+                        trainingBox.push(training);
+                    }
+                }
+                return trainingBox;
             }
         },
         async created() {

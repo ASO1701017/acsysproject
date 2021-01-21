@@ -203,6 +203,7 @@
             //食べ物選択入力のモーダルを閉じる
             closeFoodSelectModal() {
                 this.$refs['selectFoodModal'].hide()
+                this.keyword = ""
             },
             //選択へ戻るモーダル
             backFoodSelectModal() {
